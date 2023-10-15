@@ -1,6 +1,6 @@
 package com.qrcafe.entity;
 
-import com.qrcafe.enums.Roles;
+import com.qrcafe.enums.RolesEnum;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,9 +21,14 @@ public class Role {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Roles roleName;
+    @Column(name = "role_name", nullable = false)
+    private RolesEnum name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
+
+    public Role(RolesEnum name) {
+        this.name = name;
+    }
 }

@@ -1,5 +1,5 @@
 package com.qrcafe.enums;
 
-public enum Roles {
+public enum RolesEnum {
     ADMIN, STAFF, CUSTOMER
 }
