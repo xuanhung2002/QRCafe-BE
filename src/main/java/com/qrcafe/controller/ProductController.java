@@ -79,6 +79,9 @@ public class ProductController {
                                     @RequestParam(value = "categoryName", required = true) String categoryName
     )
     {
+        if(categoryService.getCategoryByCategoryName(categoryName) == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Category is not existed");
+        }
         Product product = Product.builder()
                 .name(name)
                 .price(price)
