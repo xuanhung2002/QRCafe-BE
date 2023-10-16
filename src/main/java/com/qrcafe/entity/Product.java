@@ -2,10 +2,7 @@ package com.qrcafe.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "product")
 public class Product {
     @Id
@@ -22,21 +20,18 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
-    private String productName;
+    private String name;
 
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
     private Integer amount;
 
-    @Column(nullable = false)
-    private String image;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
 
@@ -51,4 +46,8 @@ public class Product {
 
     @ManyToMany(mappedBy = "products")
     private Set<Combo> combos;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Image> images;
+
 }
