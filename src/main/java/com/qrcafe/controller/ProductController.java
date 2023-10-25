@@ -81,8 +81,9 @@ public class ProductController {
     }
 
 
+
     @PostMapping ("/add")
-    public ResponseEntity<?> addNewProduct(@RequestParam(value = "name", required = true) String name,
+    ResponseEntity<?> addNewProduct(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "price", required = true) Double price,
                                     @RequestParam(value = "description", required = true) String description,
                                     @RequestParam(value = "amount", required = true) Integer amount,
