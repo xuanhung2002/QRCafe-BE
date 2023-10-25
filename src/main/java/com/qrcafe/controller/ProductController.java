@@ -73,7 +73,7 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<?> searchProduct(@RequestParam("searchKey") String searchKey){
         if(productService.searchProduct(searchKey) != null){
-            return ResponseEntity.status(HttpStatus.OK).body(productService.searchProduct(searchKey));
+            return ResponseEntity.status(HttpStatus.OK).body(productService.searchProduct(searchKey).stream().map(p -> converter.toProductDTO(p)).collect(Collectors.toList()));
         }
         else {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No have product with this search key");
