@@ -53,6 +53,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void delete(Product product) {productRepository.delete(product);}
+    public void delete(Product product) {
+        productRepository.delete(product);
+    }
+
+    @Override
+    public List<Product> searchProduct(String searchKey) {
+        List<Product> products = productRepository.searchProduct(searchKey);
+        if (products.isEmpty()) {
+            return null;
+        } else {
+            return products;
+        }
+    }
 
 }

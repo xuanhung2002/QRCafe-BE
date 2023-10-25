@@ -70,8 +70,19 @@ public class ProductController {
     }
 
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProduct(@RequestParam("searchKey") String searchKey){
+        if(productService.searchProduct(searchKey) != null){
+            return ResponseEntity.status(HttpStatus.OK).body(productService.searchProduct(searchKey));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No have product with this search key");
+        }
+    }
+
+
     @PostMapping ("/add")
-    ResponseEntity<?> addNewProduct(@RequestParam(value = "name", required = true) String name,
+    public ResponseEntity<?> addNewProduct(@RequestParam(value = "name", required = true) String name,
                                     @RequestParam(value = "price", required = true) Double price,
                                     @RequestParam(value = "description", required = true) String description,
                                     @RequestParam(value = "amount", required = true) Integer amount,
@@ -114,6 +125,8 @@ public class ProductController {
 
         return new ResponseEntity<>(converter.toProductDTO(savedProduct), HttpStatus.OK);
     }
+
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id,
