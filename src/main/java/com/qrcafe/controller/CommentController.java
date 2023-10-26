@@ -91,15 +91,29 @@ public class CommentController {
     @PutMapping("/updateComment/{id}")
     public ResponseEntity<?> userUpdateComment(Authentication authentication, @PathVariable Long id,
                                                @RequestParam(value = "newDescription") String newDescription){
-        Comment comment = commentService.getCommentById(id);
-        if(comment != null){
-            comment.setDescription(newDescription);
-            Comment savedComment = commentService.save(comment);
-            return ResponseEntity.status(HttpStatus.OK).body(converter.toCommentResponseDTO(savedComment));
+        if(authentication == null || !authentication.isAuthenticated()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You dont have permission!!!");
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This comment is not existed!!");
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+            Comment comment = commentService.getCommentById(id);
+            if(comment != null){
+                if (username.equals(comment.getUser().getUsername())){
+                    comment.setDescription(newDescription);
+                    Comment savedComment = commentService.save(comment);
+                    return ResponseEntity.status(HttpStatus.OK).body(converter.toCommentResponseDTO(savedComment));
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You dont have permission!!!");
+                }
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This comment is not existed!!");
+            }
         }
+
+
     }
 
 
