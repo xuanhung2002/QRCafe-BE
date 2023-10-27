@@ -30,6 +30,9 @@ public class OrderOnline {
     @Column(nullable = false)
     private String destination;
 
+    @Column
+    private String description;
+
     @Column(nullable = false)
     private String paymentMethod;
 

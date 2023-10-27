@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,8 +45,8 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderDetailOffline> orderDetailOfflines;
 
-    @ManyToMany(mappedBy = "products")
-    private Set<Combo> combos;
+    @OneToMany(mappedBy = "product")
+    private Set<ComboProductDetails> comboProductDetails = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> images;
