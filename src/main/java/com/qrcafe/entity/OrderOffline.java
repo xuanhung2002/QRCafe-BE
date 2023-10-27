@@ -27,13 +27,7 @@ public class OrderOffline {
     private Double totalPrice;
 
     @Column(nullable = false)
-    private String destination;
-
-    @Column(nullable = false)
-    private String paymentMethod;
-
-    @Column(nullable = false)
-    private boolean isPaid;
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "table_id")
@@ -42,17 +36,4 @@ public class OrderOffline {
     @OneToMany(mappedBy = "orderOffline")
     private List<OrderDetailOffline> orderDetailOfflines;
 
-    @Override
-    public String toString() {
-        return "OrderOffline{" +
-                "id=" + id +
-                ", status=" + status +
-                ", totalPrice=" + totalPrice +
-                ", destination='" + destination + '\'' +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", isPaid=" + isPaid +
-                ", table=" + table +
-                ", orderDetailOfflines=" + orderDetailOfflines +
-                '}';
-    }
 }
