@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,4 +31,7 @@ public class Combo {
 
     @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL)
     private Set<ComboProductDetails> comboProductDetails = new HashSet<>();
+
+    @OneToMany(mappedBy = "combo")
+    private List<ComboDetails> comboDetails = new ArrayList<>();
 }

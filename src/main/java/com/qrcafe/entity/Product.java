@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,5 +51,8 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> images;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductDetails> productDetails = new ArrayList<>();
 
 }
