@@ -14,6 +14,4 @@ public class CommentResponseDTO {
     private String description;
     private String username;
 
-
-
 }

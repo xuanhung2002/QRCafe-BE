@@ -46,10 +46,10 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
-        if (productService.getProductById(id) == null) {
+        if (productService.getProductById(id).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No item have this ID");
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(converter.toProductDTO(productService.getProductById(id).get()));
         }
     }
 

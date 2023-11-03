@@ -26,4 +26,6 @@ public interface ComboService {
 
     void deleteCombosByIds(List<Long> comboIds);
 
+    boolean existedById(Long id);
+
 }

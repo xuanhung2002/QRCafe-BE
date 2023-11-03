@@ -34,4 +34,7 @@ public class Combo {
 
     @OneToMany(mappedBy = "combo")
     private List<ComboDetails> comboDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "combo")
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 }
