@@ -1,11 +1,9 @@
 package com.qrcafe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qrcafe.enums.TableStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @jakarta.persistence.Table(name = "`table`")
 public class Table {
@@ -26,6 +25,7 @@ public class Table {
     @Enumerated(EnumType.STRING)
     private TableStatus status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "table")
-    private List<OrderOffline> orderOfflines;
+    private List<Order> orders;
 }

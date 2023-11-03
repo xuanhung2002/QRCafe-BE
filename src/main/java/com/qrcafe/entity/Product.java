@@ -41,18 +41,12 @@ public class Product {
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "product")
-    private List<OrderDetailOnline> orderDetailOnlines;
-
-    @OneToMany(mappedBy = "product")
-    private List<OrderDetailOffline> orderDetailOfflines;
-
-    @OneToMany(mappedBy = "product")
     private Set<ComboProductDetails> comboProductDetails = new HashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> images;
-
-    @OneToMany(mappedBy = "product")
-    private List<ProductDetails> productDetails = new ArrayList<>();
 
 }

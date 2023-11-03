@@ -19,4 +19,6 @@ public interface ProductService {
 
     List<Product> searchProduct(String searchKey);
 
+    boolean existedById(Long id);
+
 }

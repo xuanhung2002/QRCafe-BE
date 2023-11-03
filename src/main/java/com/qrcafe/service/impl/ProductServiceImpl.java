@@ -37,8 +37,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Optional<Product> getProductById(Long id) {
-        Optional<Product> productOpt = productRepository.findById(id);
-        return productOpt;
+        return productRepository.findById(id);
     }
 
     @Override
@@ -65,6 +64,11 @@ public class ProductServiceImpl implements ProductService {
         } else {
             return products;
         }
+    }
+
+    @Override
+    public boolean existedById(Long id) {
+        return productRepository.existsById(id);
     }
 
 }

@@ -68,6 +68,11 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
+    public boolean existedById(Long id) {
+        return comboRepository.existsById(id);
+    }
+
+    @Override
     public void validateComboAddRequestDTO(ComboRequestDTO comboRequestDTO) {
         if (comboRequestDTO.getName() == null || comboRequestDTO.getPrice() == null || comboRequestDTO.getDetailsProducts().isEmpty()) {
             throw new IllegalArgumentException("name and price and details combo must not be null");
@@ -126,4 +131,6 @@ public class ComboServiceImpl implements ComboService {
         }
         return null;
     }
+
+
 }
