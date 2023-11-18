@@ -1,7 +1,6 @@
 package com.qrcafe.dto;
 
-import com.qrcafe.entity.User;
-import com.qrcafe.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.qrcafe.enums.OrderType;
 import lombok.*;
 
@@ -14,17 +13,19 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class OrderOnlineDTO {
+public class OrderOnlineResponseDTO {
     private Long id;
     private OrderType orderType = OrderType.ONLINE;
-    private OrderStatus orderStatus;
-    private User user;
+    private String orderStatus;
+    private String username;
+    private String phoneNumber;
     private String location;
     private Double totalPrice;
     private String note;
     private LocalDateTime orderTime;
     private LocalDateTime paymentTime;
     private String paymentMethod;
+    @JsonProperty("isPaid")
     private boolean isPaid;
-    private List<OrderDetailRequestDTO> orderDetail;
+    private List<OrderDetailResponseDTO> orderDetails;
 }

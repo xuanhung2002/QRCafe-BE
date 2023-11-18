@@ -12,7 +12,6 @@ import java.util.List;
 public class OrderOfflineRequestDTO {
     private Long id;
     private Long tableId;
-    private Double totalPrice;
     private String note;
     private List<OrderDetailRequestDTO> orderDetails;
 }

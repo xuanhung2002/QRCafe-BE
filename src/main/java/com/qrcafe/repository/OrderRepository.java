@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> getOrdersByOrderTypeEquals(OrderType orderType);
+
+    List<Order> getOrdersByUserUsername(String user_username);
 }
