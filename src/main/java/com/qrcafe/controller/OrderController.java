@@ -168,4 +168,26 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/getCurrentOrderOfTable/{idTable}")
+    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable Long idTable){
+        Order order = orderService.getCurrentOrderOfTable(idTable);
+        if(order == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
+        }
+    }
+
+    @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
+    public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder){
+        try {
+            orderService.confirmDomeOrderOfTable(idOrder);
+            return ResponseEntity.status(HttpStatus.OK).body("Success!!");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }
