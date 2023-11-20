@@ -30,4 +30,7 @@ public interface OrderService {
 
     List<Order> getOrdersByUsername(String username);
 
+    Order getCurrentOrderOfTable(Long idTable);
+    void confirmDomeOrderOfTable(Long idOrder);
+
 }

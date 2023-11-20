@@ -3,7 +3,9 @@ package com.qrcafe.controller;
 import com.qrcafe.converter.Converter;
 import com.qrcafe.dto.*;
 import com.qrcafe.entity.Order;
+import com.qrcafe.entity.Table;
 import com.qrcafe.enums.OrderStatus;
+import com.qrcafe.enums.TableStatus;
 import com.qrcafe.service.ComboService;
 import com.qrcafe.service.OrderService;
 import com.qrcafe.service.ProductService;
@@ -162,6 +164,28 @@ public class OrderController {
         try{
             orderService.cancelOrderOnline(id, username);
             return ResponseEntity.status(HttpStatus.OK).body("cancel success!!");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getCurrentOrderOfTable/{idTable}")
+    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable Long idTable){
+        Order order = orderService.getCurrentOrderOfTable(idTable);
+        if(order == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
+        }
+    }
+
+    @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
+    public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder){
+        try {
+            orderService.confirmDomeOrderOfTable(idOrder);
+            return ResponseEntity.status(HttpStatus.OK).body("Success!!");
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

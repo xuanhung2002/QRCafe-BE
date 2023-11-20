@@ -6,6 +6,7 @@ import com.qrcafe.dto.OrderOfflineRequestDTO;
 import com.qrcafe.dto.OrderOnlineRequestDTO;
 import com.qrcafe.entity.Order;
 import com.qrcafe.entity.OrderDetail;
+import com.qrcafe.entity.Table;
 import com.qrcafe.enums.OrderStatus;
 import com.qrcafe.enums.OrderType;
 import com.qrcafe.enums.PaymentMethod;
@@ -226,5 +227,20 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public List<Order> getOrdersByUsername(String username) {
     return orderRepository.getOrdersByUserUsername(username);
+  }
+
+  @Override
+  public Order getCurrentOrderOfTable(Long idTable) {
+    Table table = tableService.getTableById(idTable);
+    return orderRepository.getOrderByTableAndStatusNot(table, OrderStatus.DONE);
+  }
+
+  @Transactional
+  @Override
+  public void confirmDomeOrderOfTable(Long idOrder) {
+    Order order = getOrderById(idOrder);
+    Table table = order.getTable();
+    order.setStatus(OrderStatus.DONE);
+    table.setStatus(TableStatus.EMPTY);
   }
 }
