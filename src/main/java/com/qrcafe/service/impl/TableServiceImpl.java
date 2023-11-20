@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TableServiceImpl implements TableService {
     @Autowired
     TableRepository tableRepository;
     @Override
-    public Table getTableById(Long id) {
+    public Table getTableById(UUID id) {
         return tableRepository.findById(id).orElse(null);
     }
 

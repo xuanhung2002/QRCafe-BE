@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ public class OrderOfflineResponseDTO {
     private Long id;
     private OrderType orderType = OrderType.OFFLINE;
     private String orderStatus;
-    private Long tableId;
+    private UUID tableId;
     private Double totalPrice;
     private String note;
     private String paymentMethod;
