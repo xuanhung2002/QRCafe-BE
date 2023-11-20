@@ -212,15 +212,15 @@ public class OrderServiceImpl implements OrderService {
 
     if (orderOpt.isPresent()) {
       Order order = orderOpt.get();
-      if(getOrdersByUsername(username).contains(order) && order.getStatus() == OrderStatus.PENDING){
+      if (getOrdersByUsername(username).contains(order) && order.getStatus() == OrderStatus.PENDING) {
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
-      }else {
+      } else {
         throw new SecurityException("You can not cancel this order");
       }
 
     } else {
-            throw new EntityNotFoundException("This order is not existed!");
+      throw new EntityNotFoundException("This order is not existed!");
     }
   }
 
