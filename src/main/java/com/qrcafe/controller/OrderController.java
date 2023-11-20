@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/order")
@@ -169,7 +170,7 @@ public class OrderController {
     }
 
     @GetMapping("/getCurrentOrderOfTable/{idTable}")
-    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable Long idTable){
+    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable UUID idTable){
         Order order = orderService.getCurrentOrderOfTable(idTable);
         if(order == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order");

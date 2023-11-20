@@ -7,6 +7,7 @@ import com.qrcafe.entity.Order;
 import com.qrcafe.entity.OrderDetail;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OrderService {
 
@@ -31,6 +32,6 @@ public interface OrderService {
     List<Order> getOrdersByUsername(String username);
 
 
-    Order getCurrentOrderOfTable(Long idTable);
+    Order getCurrentOrderOfTable(UUID idTable);
     void confirmDomeOrderOfTable(Long idOrder);
 }

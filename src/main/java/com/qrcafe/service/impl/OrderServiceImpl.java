@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -230,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public Order getCurrentOrderOfTable(Long idTable) {
+  public Order getCurrentOrderOfTable(UUID idTable) {
     Table table = tableService.getTableById(idTable);
     return orderRepository.getOrderByTableAndStatusNot(table, OrderStatus.DONE);
   }
