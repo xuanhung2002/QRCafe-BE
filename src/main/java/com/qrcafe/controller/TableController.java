@@ -31,4 +31,14 @@ public class TableController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
+        Object table = tableService.getTableById(id);
+        if (table == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No item have this ID");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(table);
+        }
+    }
+
 }

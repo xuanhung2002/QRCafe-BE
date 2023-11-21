@@ -104,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetail newOrderDetail : newOrderDetails) {
             addOrUpdateOrderDetail(order, newOrderDetail);
         }
+        order.setTotalPrice(order.getTotalPrice() + calcTotalPrice(orderDetailDTOS));
         return orderRepository.save(order);
     }
 
