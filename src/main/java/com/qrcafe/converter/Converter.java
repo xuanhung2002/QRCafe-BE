@@ -97,10 +97,28 @@ public class Converter {
                 .note(order.getNote())
                 .orderTime(order.getOrderTime())
                 .paymentTime(order.getPaymentTime())
-                .paymentMethod(order.getPaymentMethod())
+                .paymentMethod(order.getPaymentMethod() != null ? order.getPaymentMethod().toString() : null)
                 .isPaid(order.isPaid())
                 .totalPrice(order.getTotalPrice())
                 .tableId(order.getTable().getId())
+                .orderDetails(order.getOrderDetails().stream().map(this::toOrderDetailResponseDTO).collect(Collectors.toList()))
+                .build();
+    }
+
+    public OrderOnlineResponseDTO toOrderOnlineResponseDTO(Order order){
+        return OrderOnlineResponseDTO.builder()
+                .id(order.getId())
+                .username(order.getUser().getUsername())
+                .orderType(order.getOrderType())
+                .orderStatus(order.getStatus().name())
+                .note(order.getNote())
+                .orderTime(order.getOrderTime())
+                .paymentTime(order.getPaymentTime())
+                .paymentMethod(order.getPaymentMethod().toString())
+                .isPaid(order.isPaid())
+                .totalPrice(order.getTotalPrice())
+                .location(order.getLocation())
+                .phoneNumber(order.getPhoneNumber())
                 .orderDetails(order.getOrderDetails().stream().map(this::toOrderDetailResponseDTO).collect(Collectors.toList()))
                 .build();
     }

@@ -2,6 +2,7 @@ package com.qrcafe.entity;
 
 import com.qrcafe.enums.OrderStatus;
 import com.qrcafe.enums.OrderType;
+import com.qrcafe.enums.PaymentMethod;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -41,6 +42,8 @@ public class Order {
 
     private String location;
 
+    private String phoneNumber;
+
     @Column
     private String note;
 
@@ -48,11 +51,13 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime orderTime;
 
+
     @Column(name = "payment_time")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime paymentTime;
 
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     @Column
     private boolean isPaid;

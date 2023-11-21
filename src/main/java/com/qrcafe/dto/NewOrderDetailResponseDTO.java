@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,6 +13,6 @@ import java.util.List;
 @Builder
 @Data
 public class NewOrderDetailResponseDTO{
-    private Long tableId;
+    private UUID tableId;
     List<OrderDetailResponseDTO> orderDetails;
 }
