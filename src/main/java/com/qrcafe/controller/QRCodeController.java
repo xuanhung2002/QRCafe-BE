@@ -28,7 +28,7 @@ public class QRCodeController {
     qrCodeService.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
   }
 
-  @GetMapping(value = "/genrateQRCode/{rootUrl}/{idTable}/{width}/{height}")
+  @GetMapping(value = "/generateQRCode/{rootUrl}/{idTable}/{width}/{height}")
   public ResponseEntity<byte[]> generateQRCode(
           @PathVariable("rootUrl") String rootUrl,
           @PathVariable("idTable") String idTable,
