@@ -38,6 +38,15 @@ public class ComboController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getComboById(@PathVariable Long id) {
+        if (comboService.getComboById(id) == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No item have this ID");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(converter.toComboDTO(comboService.getComboById(id)));
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addCombo(@RequestBody ComboRequestDTO comboRequestDTO) {
         try {
