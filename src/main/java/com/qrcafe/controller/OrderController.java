@@ -105,6 +105,14 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrdersById(@PathVariable Long id) {
+        Order order = orderService.getOrderById(id);
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This order is not existed");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
+    }
     @PutMapping("/updateStatusOrder/{orderId}")
     public ResponseEntity<?> updateStatusOrder(@PathVariable Long orderId,
                                                @RequestBody Map<String, String> requestBody){
