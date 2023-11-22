@@ -120,6 +120,7 @@ public class OrderServiceImpl implements OrderService {
     }
     order.setTotalPrice(order.getTotalPrice() + calcTotalPrice(orderDetailDTOS));
     return orderRepository.save(order);
+
   }
 
   @Override
