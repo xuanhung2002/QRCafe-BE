@@ -118,15 +118,7 @@ public class OrderServiceImpl implements OrderService {
     for (OrderDetail newOrderDetail : newOrderDetails) {
       addOrUpdateOrderDetail(order, newOrderDetail);
     }
-
-    // Recalculate total price
-    double totalPrice = order.getOrderDetails().stream()
-            .mapToDouble(detail -> detail.getProduct() != null
-                    ? detail.getProduct().getPrice() * detail.getQuantity()
-                    : detail.getCombo().getPrice() * detail.getQuantity())
-            .sum();
-
-    order.setTotalPrice(totalPrice);
+    order.setTotalPrice(order.getTotalPrice() + calcTotalPrice(orderDetailDTOS));
     return orderRepository.save(order);
 
   }

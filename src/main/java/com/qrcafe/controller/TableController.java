@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/table")
 public class TableController {
@@ -28,6 +30,16 @@ public class TableController {
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable UUID id) {
+        Object table = tableService.getTableById(id);
+        if (table == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No item have this ID");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(table);
         }
     }
 
