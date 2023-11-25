@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -121,5 +122,36 @@ public class Converter {
                 .phoneNumber(order.getPhoneNumber())
                 .orderDetails(order.getOrderDetails().stream().map(this::toOrderDetailResponseDTO).collect(Collectors.toList()))
                 .build();
+    }
+
+    public CartItemDTO toCartItemDTO(CartItem cartItem){
+        if(cartItem.getProduct() != null){
+            return CartItemDTO.builder()
+                    .id(cartItem.getId())
+                    .productId(cartItem.getProduct().getId())
+                    .comboId(null)
+                    .itemImages(cartItem.getProduct().getImages().stream().map(Image::getImageUrl).toList())
+                    .nameItem(cartItem.getProduct().getName())
+                    .unitPrice(cartItem.getProduct().getPrice())
+                    .quantity(cartItem.getQuantity())
+                    .totalPrice(cartItem.getQuantity() * cartItem.getProduct().getPrice())
+                    .build();
+        }
+        else {
+            return CartItemDTO.builder()
+                    .id(cartItem.getId())
+                    .productId(null)
+                    .comboId(cartItem.getCombo().getId())
+                    .itemImages(cartItem.getCombo().getComboProductDetails()
+                            .stream()
+                            .map(t -> t.getProduct().getImages())
+                            .flatMap(t -> t.stream().map(Image::getImageUrl)).toList())
+                    .nameItem(cartItem.getCombo().getName())
+                    .unitPrice(cartItem.getCombo().getPrice())
+                    .quantity(cartItem.getQuantity())
+                    .totalPrice(cartItem.getQuantity() * cartItem.getCombo().getPrice())
+                    .build();
+        }
+
     }
 }
