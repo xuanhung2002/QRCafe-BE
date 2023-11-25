@@ -37,4 +37,7 @@ public class Combo {
 
     @OneToMany(mappedBy = "combo")
     private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL)
+    private  List<CartItem> cartItems;
 }
