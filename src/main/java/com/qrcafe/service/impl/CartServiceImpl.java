@@ -1,11 +1,10 @@
 package com.qrcafe.service.impl;
 
-import com.qrcafe.dto.CartItemRequest;
+import com.qrcafe.dto.CartItemRequestDTO;
 import com.qrcafe.entity.Cart;
 import com.qrcafe.entity.CartItem;
 import com.qrcafe.entity.Combo;
 import com.qrcafe.entity.Product;
-import com.qrcafe.repository.CartItemRepository;
 import com.qrcafe.repository.CartRepository;
 import com.qrcafe.service.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -44,7 +41,7 @@ public class CartServiceImpl implements CartService {
 
   @Transactional
   @Override
-  public void addCartItemToCart(String username, CartItemRequest cartItemRequest) {
+  public void addCartItemToCart(String username, CartItemRequestDTO cartItemRequest) {
     if (cartItemRequest.getProductId() != null && cartItemRequest.getComboId() == null) {
       Optional<Product> productOpt = productService.getProductById(cartItemRequest.getProductId());
       if (productOpt.isPresent()) {
@@ -99,7 +96,7 @@ public class CartServiceImpl implements CartService {
 
   @Transactional
   @Override
-  public void handleAddCartItemToCart(String username, CartItemRequest cartItemRequest) {
+  public void handleAddCartItemToCart(String username, CartItemRequestDTO cartItemRequest) {
 //create if user have no cart
     createCartForUser(username);
 
@@ -115,7 +112,7 @@ public class CartServiceImpl implements CartService {
 
   @Transactional
   @Override
-  public void handleAddProductToCart(String username, CartItemRequest cartItemRequest) {
+  public void handleAddProductToCart(String username, CartItemRequestDTO cartItemRequest) {
     List<CartItem> cartItemsOfUser = getCartItemsByUsername(username);
     if (cartItemsOfUser.isEmpty()) {
       addCartItemToCart(username, cartItemRequest);
@@ -149,7 +146,7 @@ public class CartServiceImpl implements CartService {
 
   @Transactional
   @Override
-  public void handleAddComboToCart(String username, CartItemRequest cartItemRequest) {
+  public void handleAddComboToCart(String username, CartItemRequestDTO cartItemRequest) {
     List<CartItem> cartItemsOfUser = getCartItemsByUsername(username);
     if (cartItemsOfUser.isEmpty()) {
       addCartItemToCart(username, cartItemRequest);

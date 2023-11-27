@@ -1,8 +1,6 @@
 package com.qrcafe.service;
 
-import com.qrcafe.dto.OrderDetailRequestDTO;
-import com.qrcafe.dto.OrderOfflineRequestDTO;
-import com.qrcafe.dto.OrderOnlineRequestDTO;
+import com.qrcafe.dto.*;
 import com.qrcafe.entity.Order;
 import com.qrcafe.entity.OrderDetail;
 
@@ -22,6 +20,7 @@ public interface OrderService {
     Order addOrderOfflineDetails(Order order, List<OrderDetailRequestDTO> orderDetailDTOS);
 
     Double calcTotalPrice(List<OrderDetailRequestDTO> orderDetailDTOS);
+    Double calcTotalPriceOfCartItems(List<Long> cartItemIds);
 
     void addOrUpdateOrderDetail(Order order, OrderDetail newOrderDetail);
 
