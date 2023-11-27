@@ -155,22 +155,4 @@ public class Converter {
 
     }
 
-    public OrderDetail cartItemToOrderDetailEntity(CartItemRequestDTO cartItemRequestDTO){
-        if(cartItemRequestDTO.getProductId() == null && comboService.existedById(cartItemRequestDTO.getComboId())){
-            return OrderDetail.builder()
-                    .combo(comboService.getComboById(cartItemRequestDTO.getComboId()))
-                    .quantity(cartItemRequestDTO.getQuantity())
-                    .build();
-        }
-        else if(cartItemRequestDTO.getComboId() == null && productService.existedById(cartItemRequestDTO.getProductId())){
-            return OrderDetail.builder()
-                    .product(productService.getProductById(cartItemRequestDTO.getProductId()).orElse(null))
-                    .quantity(cartItemRequestDTO.getQuantity())
-                    .build();
-        }
-        else {
-            throw new IllegalArgumentException("can not convert OrderDetailDTO to OrderDetailEntity because dont have any product or combo");
-        }
-    }
-
 }

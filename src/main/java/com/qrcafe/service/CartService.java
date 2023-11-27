@@ -16,5 +16,6 @@ public interface CartService {
   void handleAddCartItemToCart(String username, CartItemRequestDTO cartItemRequest);
   void handleAddProductToCart(String username, CartItemRequestDTO cartItemRequest);
   void handleAddComboToCart(String username, CartItemRequestDTO cartItemRequest);
+
   void deleteCartItem(Long id, String username);
 }

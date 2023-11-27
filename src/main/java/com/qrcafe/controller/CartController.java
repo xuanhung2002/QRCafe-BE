@@ -42,7 +42,6 @@ public class CartController {
   @PostMapping("/add")
   public ResponseEntity<String> addCartItemToCart(@RequestBody CartItemRequestDTO cartItemRequest,
                                                   Authentication authentication) {
-
     if (authentication == null || !authentication.isAuthenticated()) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
