@@ -52,7 +52,11 @@ public class OrderController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("This table is UNEMPTY");
             }
 
-            messagingTemplate.convertAndSend("/topic/newOfflineOrder", converter.toOrderOfflineResponseDTO(savedOrder));
+            WsMessageDTO messageDTO = WsMessageDTO.builder()
+                    .message("NEW_OFFLINE_ORDER")
+                    .data(savedOrder.getTable())
+                    .build();
+            messagingTemplate.convertAndSend("/topic/notify", messageDTO);
             return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(savedOrder));
         } catch (Exception e) {
             e.printStackTrace();
