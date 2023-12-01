@@ -1,7 +1,7 @@
 package com.qrcafe.controller;
 
 import com.qrcafe.converter.Converter;
-import com.qrcafe.dto.CartItemRequest;
+import com.qrcafe.dto.CartItemRequestDTO;
 import com.qrcafe.dto.UpdateCartItemRequest;
 import com.qrcafe.entity.CartItem;
 import com.qrcafe.service.CartService;
@@ -40,9 +40,8 @@ public class CartController {
 
 
   @PostMapping("/add")
-  public ResponseEntity<String> addCartItemToCart(@RequestBody CartItemRequest cartItemRequest,
+  public ResponseEntity<String> addCartItemToCart(@RequestBody CartItemRequestDTO cartItemRequest,
                                                   Authentication authentication) {
-
     if (authentication == null || !authentication.isAuthenticated()) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
