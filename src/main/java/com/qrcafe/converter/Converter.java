@@ -8,7 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -152,7 +151,23 @@ public class Converter {
                     .totalPrice(cartItem.getQuantity() * cartItem.getCombo().getPrice())
                     .build();
         }
-
     }
 
+    public UserLocationDTO toUserLocationDTO(UserLocation userLocation) {
+        return UserLocationDTO.builder()
+                .id(userLocation.getId())
+                .address(userLocation.getAddress())
+                .fullName(userLocation.getFullName())
+                .phoneNumber(userLocation.getPhoneNumber())
+                .build();
+    }
+
+    public UserDTO toUserDTO(User user){
+        return UserDTO.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .dateOfBirth(user.getDateOfBirth())
+                .fullName(user.getFullName())
+                .build();
+    }
 }

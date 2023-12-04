@@ -143,6 +143,17 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/onlineOrderOfUser")
+    public ResponseEntity<?> getOnlineOrdersOfUser(Authentication authentication){
+        if(authentication == null || !authentication.isAuthenticated()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Let's loginn");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrdersByUsername(username).stream().map(converter::toOrderOnlineResponseDTO).toList());
+    }
+
     @PostMapping("/addOnlineOrder")
     public ResponseEntity<?> addOnlineOrder(@RequestBody OrderOnlineRequestDTO orderOnlineRequestDTO, Authentication authentication){
         if(authentication == null || !authentication.isAuthenticated()){

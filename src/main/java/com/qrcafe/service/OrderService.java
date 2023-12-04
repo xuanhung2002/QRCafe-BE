@@ -33,4 +33,5 @@ public interface OrderService {
 
     Order getCurrentOrderOfTable(UUID idTable);
     void confirmDomeOrderOfTable(Long idOrder);
+
 }
