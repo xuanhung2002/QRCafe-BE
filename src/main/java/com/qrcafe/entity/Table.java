@@ -20,7 +20,7 @@ public class Table {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "VARBINARY(16)")
+    @Column(columnDefinition = "VARBINARY(36)")
     private UUID id;
 
     @Column(nullable = false)
