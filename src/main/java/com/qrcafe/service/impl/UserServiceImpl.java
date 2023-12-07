@@ -2,11 +2,15 @@ package com.qrcafe.service.impl;
 
 
 import com.qrcafe.dto.UserLocationDTO;
+import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
 import com.qrcafe.entity.UserLocation;
+import com.qrcafe.enums.RolesEnum;
 import com.qrcafe.repository.UserLocationRepository;
 import com.qrcafe.repository.UserRepository;
+import com.qrcafe.service.RoleService;
 import com.qrcafe.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,8 @@ public class UserServiceImpl implements UserService {
   UserRepository userRepository;
   @Autowired
   UserLocationRepository userLocationRepository;
+  @Autowired
+  RoleService roleService;
 
   @Override
   public boolean existedByUsername(String username) {
@@ -91,6 +97,20 @@ public class UserServiceImpl implements UserService {
         }
     }else {
       return null;
+    }
+  }
+
+  @Override
+  public boolean grantPermissionForStaff(String username, String role) {
+    try{
+      User staff = getUserByUsername(username);
+      Role newRole = roleService.getRoleByRoleName(RolesEnum.valueOf(role));
+      staff.getRoles().add(newRole);
+      userRepository.save(staff);
+      return true;
+    }catch (Exception e){
+      e.printStackTrace();
+      return false;
     }
   }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class OrderController {
     SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/offlineOrders")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> getOfflineOrders() {
         List<Order> orders = orderService.getOfflineOrders();
         if (orders.isEmpty()) {
@@ -137,6 +139,7 @@ public class OrderController {
     }
 
     @PutMapping("/updateStatusOrder/{orderId}")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> updateStatusOrder(@PathVariable Long orderId,
             @RequestBody Map<String, String> requestBody) {
 
@@ -155,6 +158,7 @@ public class OrderController {
     }
 
     @GetMapping("/onlineOrders")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> getAllOnlineOrder() {
         List<Order> orders = orderService.getOnlineOrders();
         if (orders.isEmpty()) {
@@ -223,6 +227,7 @@ public class OrderController {
     }
 
     @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder) {
         try {
             orderService.confirmDomeOrderOfTable(idOrder);

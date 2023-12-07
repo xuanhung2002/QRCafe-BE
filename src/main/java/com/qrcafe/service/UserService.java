@@ -20,4 +20,6 @@ public interface UserService {
     boolean updateUserLocation(String username, UserLocationDTO userLocationDTO);
 
     UserLocation addUserLocation(String username, UserLocationDTO userLocationDTO);
+
+    boolean grantPermissionForStaff(String username, String role);
 }

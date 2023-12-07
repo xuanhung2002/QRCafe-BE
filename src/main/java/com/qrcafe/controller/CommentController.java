@@ -10,6 +10,7 @@ import com.qrcafe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +34,7 @@ public class CommentController {
     Converter converter;
 
     @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN', 'CUSTOMER')")
     public ResponseEntity<?> getCommentOfProduct(@RequestParam("productId") Long productId) {
         List<Comment> comments = commentService.getCommentsByProductId(productId);
         if (comments != null) {
@@ -119,6 +121,7 @@ public class CommentController {
 
     //authorize this api for admin
     @DeleteMapping("/adminDeleteComment/{id}")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> adminDeleteComment(@PathVariable Long id) {
         Comment comment = commentService.getCommentById(id);
         if (comment != null) {
