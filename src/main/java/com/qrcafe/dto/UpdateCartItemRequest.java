@@ -12,6 +12,5 @@ import lombok.Setter;
 public class UpdateCartItemRequest {
     private Long cartItemId;
     private Integer newQuantity;
-
 }
 

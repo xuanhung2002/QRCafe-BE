@@ -28,16 +28,6 @@ public class CartItemServiceImpl implements CartItemService {
   }
 
   @Override
-  public Object getItem(Long id) {
-    Product product = cartItemRepository.getProductByCartItemId(id);
-    if (product != null) {
-      return product;
-    } else {
-      return cartItemRepository.getComboByCartItemId(id);
-    }
-  }
-
-  @Override
   public void save(CartItem cartItem) {
     cartItemRepository.save(cartItem);
   }

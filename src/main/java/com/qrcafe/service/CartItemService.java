@@ -10,7 +10,6 @@ public interface CartItemService {
   boolean existById(Long id);
   void deleteById(Long id);
 
-  Object getItem(Long id);
   void save(CartItem cartItem);
   void delete(CartItem cartItem);
 
