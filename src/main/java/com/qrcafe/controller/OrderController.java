@@ -1,23 +1,36 @@
 package com.qrcafe.controller;
 
-import com.qrcafe.converter.Converter;
-import com.qrcafe.dto.*;
-import com.qrcafe.entity.Order;
-import com.qrcafe.enums.OrderStatus;
-import com.qrcafe.service.ComboService;
-import com.qrcafe.service.OrderService;
-import com.qrcafe.service.ProductService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.qrcafe.converter.Converter;
+import com.qrcafe.dto.NewOrderDetailResponseDTO;
+import com.qrcafe.dto.OrderDetailRequestDTO;
+import com.qrcafe.dto.OrderDetailResponseDTO;
+import com.qrcafe.dto.OrderOfflineRequestDTO;
+import com.qrcafe.dto.OrderOnlineRequestDTO;
+import com.qrcafe.dto.WsMessageDTO;
+import com.qrcafe.entity.Order;
+import com.qrcafe.enums.OrderStatus;
+import com.qrcafe.service.ComboService;
+import com.qrcafe.service.OrderService;
+import com.qrcafe.service.ProductService;
 
 @RestController
 @RequestMapping("/api/order")
@@ -39,8 +52,9 @@ public class OrderController {
         if (orders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders");
         } else {
-//            orders.stream().map(converter::toOrderOfflineDTO).forEach(System.out::println);
-            return ResponseEntity.status(HttpStatus.OK).body(orders.stream().map(converter::toOrderOfflineResponseDTO).toList());
+            // orders.stream().map(converter::toOrderOfflineDTO).forEach(System.out::println);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(orders.stream().map(converter::toOrderOfflineResponseDTO).toList());
         }
     }
 
@@ -52,7 +66,11 @@ public class OrderController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("This table is UNEMPTY");
             }
 
-            messagingTemplate.convertAndSend("/topic/newOfflineOrder", converter.toOrderOfflineResponseDTO(savedOrder));
+            WsMessageDTO messageDTO = WsMessageDTO.builder()
+                    .message("NEW_OFFLINE_ORDER")
+                    .data(savedOrder.getTable())
+                    .build();
+            messagingTemplate.convertAndSend("/topic/notify", messageDTO);
             return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(savedOrder));
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,43 +80,47 @@ public class OrderController {
 
     @PostMapping("/addOrderOfflineDetails/{orderId}")
     public ResponseEntity<?> addOrderOfflineDetails(@PathVariable Long orderId,
-                                                    @RequestBody List<OrderDetailRequestDTO> orderDetailDTOs) {
+            @RequestBody List<OrderDetailRequestDTO> orderDetailDTOs) {
         Order order = orderService.getOrderById(orderId);
         if (order == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This order is not existed");
         } else {
             try {
-                Order updatedOrder =  orderService.addOrderOfflineDetails(order, orderDetailDTOs);
+                Order updatedOrder = orderService.addOrderOfflineDetails(order, orderDetailDTOs);
 
-                //return to WebSocket to FE can see new update detail
+                // return to WebSocket to FE can see new update detail
                 List<OrderDetailResponseDTO> orderDetailResponseDTOS = new ArrayList<>();
-                for (OrderDetailRequestDTO orderDetailRequestDTO : orderDetailDTOs){
-                    if(orderDetailRequestDTO.getProductId() != null){
-                      orderDetailResponseDTOS.add(OrderDetailResponseDTO.builder()
-                              .productDTO(converter.toProductDTO(productService.getProductById(orderDetailRequestDTO.getProductId()).get()))
-                              .quantity(orderDetailRequestDTO.getQuantity())
-                              .build()
-                      );
+                for (OrderDetailRequestDTO orderDetailRequestDTO : orderDetailDTOs) {
+                    if (orderDetailRequestDTO.getProductId() != null) {
+                        orderDetailResponseDTOS.add(OrderDetailResponseDTO.builder()
+                                .productDTO(converter.toProductDTO(
+                                        productService.getProductById(orderDetailRequestDTO.getProductId()).get()))
+                                .quantity(orderDetailRequestDTO.getQuantity())
+                                .build());
                     }
-                    if(orderDetailRequestDTO.getComboId() != null){
-                      orderDetailResponseDTOS.add(
-                              OrderDetailResponseDTO.builder()
-                                  .comboDTO(converter.toComboDTO(comboService.getComboById(orderDetailRequestDTO.getComboId())))
-                                  .quantity(orderDetailRequestDTO.getQuantity())
-                                  .build()
-                        );
+                    if (orderDetailRequestDTO.getComboId() != null) {
+                        orderDetailResponseDTOS.add(
+                                OrderDetailResponseDTO.builder()
+                                        .comboDTO(converter.toComboDTO(
+                                                comboService.getComboById(orderDetailRequestDTO.getComboId())))
+                                        .quantity(orderDetailRequestDTO.getQuantity())
+                                        .build());
                     }
                 }
                 NewOrderDetailResponseDTO newOrderDetailResponseDTO = NewOrderDetailResponseDTO.builder()
+                        .tableName(order.getTable().getName())
                         .tableId(order.getTable().getId())
                         .orderDetails(orderDetailResponseDTOS)
                         .build();
-                messagingTemplate.convertAndSend("/topic/orderDetailUpdates", newOrderDetailResponseDTO);
+                WsMessageDTO messageDTO = WsMessageDTO.builder()
+                        .message("ADD_ORDER_DETAIL")
+                        .data(newOrderDetailResponseDTO)
+                        .build();
+                messagingTemplate.convertAndSend("/topic/notify", messageDTO);
                 //
 
                 return ResponseEntity.status(HttpStatus.OK).body(newOrderDetailResponseDTO);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
@@ -113,16 +135,17 @@ public class OrderController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
     }
+
     @PutMapping("/updateStatusOrder/{orderId}")
     public ResponseEntity<?> updateStatusOrder(@PathVariable Long orderId,
-                                               @RequestBody Map<String, String> requestBody){
+            @RequestBody Map<String, String> requestBody) {
 
         String orderStatus = requestBody.get("orderStatus");
         if (orderStatus == null) {
             return ResponseEntity.badRequest().body("The 'orderStatus' field is missing in the JSON request.");
         }
         Order order = orderService.getOrderById(orderId);
-        if(order == null){
+        if (order == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This order is not existed");
         } else {
             order.setStatus(OrderStatus.valueOf(orderStatus.toUpperCase()));
@@ -131,15 +154,15 @@ public class OrderController {
         }
     }
 
-
     @GetMapping("/onlineOrders")
-    public ResponseEntity<?> getAllOnlineOrder(){
+    public ResponseEntity<?> getAllOnlineOrder() {
         List<Order> orders = orderService.getOnlineOrders();
         if (orders.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders");
         } else {
-//            orders.stream().map(converter::toOrderOfflineDTO).forEach(System.out::println);
-            return ResponseEntity.status(HttpStatus.OK).body(orders.stream().map(converter::toOrderOnlineResponseDTO).toList());
+            // orders.stream().map(converter::toOrderOfflineDTO).forEach(System.out::println);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(orders.stream().map(converter::toOrderOnlineResponseDTO).toList());
         }
     }
 
@@ -155,8 +178,9 @@ public class OrderController {
     }
 
     @PostMapping("/addOnlineOrder")
-    public ResponseEntity<?> addOnlineOrder(@RequestBody OrderOnlineRequestDTO orderOnlineRequestDTO, Authentication authentication){
-        if(authentication == null || !authentication.isAuthenticated()){
+    public ResponseEntity<?> addOnlineOrder(@RequestBody OrderOnlineRequestDTO orderOnlineRequestDTO,
+            Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Let's loginn");
         }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -173,38 +197,37 @@ public class OrderController {
     }
 
     @PutMapping("/cancelOnlineOrder/{id}")
-    public ResponseEntity<?> cancelOnlineOrder(@PathVariable Long id, Authentication authentication){
-        if(authentication == null || !authentication.isAuthenticated()){
+    public ResponseEntity<?> cancelOnlineOrder(@PathVariable Long id, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Let's loginn");
         }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
-        try{
+        try {
             orderService.cancelOrderOnline(id, username);
             return ResponseEntity.status(HttpStatus.OK).body("cancel success!!");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @GetMapping("/getCurrentOrderOfTable/{idTable}")
-    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable UUID idTable){
+    public ResponseEntity<?> getCurrentOrderOfTable(@PathVariable UUID idTable) {
         Order order = orderService.getCurrentOrderOfTable(idTable);
-        if(order == null){
+        if (order == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No order");
-        }
-        else {
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
         }
     }
 
     @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
-    public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder){
+    public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder) {
         try {
             orderService.confirmDomeOrderOfTable(idOrder);
             return ResponseEntity.status(HttpStatus.OK).body("Success!!");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
