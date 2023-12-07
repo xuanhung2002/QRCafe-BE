@@ -108,12 +108,13 @@ public class OrderController {
                     }
                 }
                 NewOrderDetailResponseDTO newOrderDetailResponseDTO = NewOrderDetailResponseDTO.builder()
+                        .tableName(order.getTable().getName())
                         .tableId(order.getTable().getId())
                         .orderDetails(orderDetailResponseDTOS)
                         .build();
                 WsMessageDTO messageDTO = WsMessageDTO.builder()
                         .message("ADD_ORDER_DETAIL")
-                        .data(order.getTable())
+                        .data(newOrderDetailResponseDTO)
                         .build();
                 messagingTemplate.convertAndSend("/topic/notify", messageDTO);
                 //
