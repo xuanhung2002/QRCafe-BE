@@ -2,12 +2,11 @@ package com.qrcafe.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "combo")
 public class Combo {
     @Id
@@ -27,11 +27,17 @@ public class Combo {
     @Column(nullable = false)
     private Double price;
 
-    @ManyToMany
-    @JoinTable(
-            name = "combo_product",
-            joinColumns = @JoinColumn(name = "combo_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> products = new HashSet<>();
+    private String description;
+
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL)
+    private Set<ComboProductDetails> comboProductDetails = new HashSet<>();
+
+    @OneToMany(mappedBy = "combo")
+    private List<ComboDetails> comboDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "combo")
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL)
+    private  List<CartItem> cartItems;
 }

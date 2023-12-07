@@ -1,5 +1,6 @@
 package com.qrcafe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -12,20 +13,23 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_detail_online")
-public class OrderDetailOnline {
+@Table(name = "image")
+public class Image {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "image_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Integer amount;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "order_online_id")
-    private OrderOnline orderOnline;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Image(String imageUrl, Product product) {
+        this.imageUrl = imageUrl;
+        this.product = product;
+    }
 }

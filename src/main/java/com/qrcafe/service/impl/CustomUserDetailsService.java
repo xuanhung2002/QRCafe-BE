@@ -1,13 +1,14 @@
 package com.qrcafe.service.impl;
 
-import com.qrcafe.entity.CustomUserDetails;
-import com.qrcafe.entity.User;
-import com.qrcafe.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.qrcafe.entity.CustomUserDetails;
+import com.qrcafe.entity.User;
+import com.qrcafe.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,7 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-
         return new CustomUserDetails(user);
     }
 }

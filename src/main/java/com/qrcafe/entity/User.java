@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,14 +32,20 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column
+    private String fullName;
+
+    @Column
+    private Date dateOfBirth;
+
     @OneToMany(mappedBy = "user")
-    private List<UserInformation> userInformations;
+    private List<UserLocation> userLocations;
 
     @OneToMany(mappedBy = "user")
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "user")
-    private List<OrderOnline> orderOnlines;
+    private List<Order> orders;
 
     @OneToMany(mappedBy = "user")
     private List<Vourcher> vourchers;
