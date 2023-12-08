@@ -12,8 +12,11 @@ import com.qrcafe.service.RoleService;
 import com.qrcafe.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +29,8 @@ public class UserServiceImpl implements UserService {
   UserLocationRepository userLocationRepository;
   @Autowired
   RoleService roleService;
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
   @Override
   public boolean existedByUsername(String username) {
@@ -112,5 +117,31 @@ public class UserServiceImpl implements UserService {
       e.printStackTrace();
       return false;
     }
+  }
+
+  @Override
+  public boolean deletePermissionOfStaff(String username) {
+    List<Role> roles = userRepository.findRolesByUsername(username);
+    Role staffRole = roleService.getRoleByRoleName(RolesEnum.STAFF);
+    if(roles.contains(staffRole)){
+      roles.remove(staffRole);
+      User user = userRepository.findByUsername(username);
+      user.setRoles(new HashSet<>(roles));
+      userRepository.save(user);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public void resetUserPassword(String username) {
+    User user = getUserByUsername(username);
+    user.setPassword(passwordEncoder.encode("12345678"));
+    userRepository.save(user);
+  }
+
+  @Override
+  public List<User> getAllStaff() {
+    return userRepository.findUsersByRole(RolesEnum.STAFF);
   }
 }
