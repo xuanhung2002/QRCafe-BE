@@ -18,7 +18,6 @@ public class CorsConfig {
         // corsConfiguration.addAllowedOrigin("http://192.168.1.29:3000");
         // corsConfiguration.addAllowedOrigin("http://localhost:3001");
         // corsConfiguration.addAllowedOrigin("http://localhost:3000");
-
         corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
