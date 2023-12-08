@@ -1,5 +1,7 @@
 package com.qrcafe.config;
 
+import java.util.Collections;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,7 +19,7 @@ public class CorsConfig {
         // corsConfiguration.addAllowedOrigin("http://localhost:3001");
         // corsConfiguration.addAllowedOrigin("http://localhost:3000");
 
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("*"));
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
