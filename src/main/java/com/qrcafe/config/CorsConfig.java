@@ -16,7 +16,7 @@ public class CorsConfig {
         corsConfiguration.addAllowedOrigin("https://qr-order-admin.netlify.app");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        // corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         
