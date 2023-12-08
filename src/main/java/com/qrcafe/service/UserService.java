@@ -22,4 +22,9 @@ public interface UserService {
     UserLocation addUserLocation(String username, UserLocationDTO userLocationDTO);
 
     boolean grantPermissionForStaff(String username, String role);
+    boolean deletePermissionOfStaff(String username);
+
+    void resetUserPassword(String username);
+
+    List<User> getAllStaff();
 }
