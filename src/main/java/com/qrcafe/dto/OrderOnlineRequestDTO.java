@@ -19,5 +19,6 @@ public class OrderOnlineRequestDTO {
   private String paymentMethod;
   @JsonProperty("isPaid")
   private boolean isPaid;
-  private List<OrderDetailRequestDTO> orderDetails;
+  @JsonProperty("cartItemIds")
+  private List<Long> cartItemIds;
 }

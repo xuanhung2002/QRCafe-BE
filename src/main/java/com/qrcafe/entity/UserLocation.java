@@ -2,20 +2,16 @@ package com.qrcafe.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.sql.Date;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-@Table(name = "User_information")
-public class UserInformation {
+@Table(name = "user_location")
+public class UserLocation {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -28,9 +24,6 @@ public class UserInformation {
 
     @Column(nullable = false)
     private String phoneNumber;
-
-    @Column(nullable = false)
-    private Date dateOfBirth;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

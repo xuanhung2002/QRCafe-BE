@@ -22,11 +22,11 @@ public class Role {
     private Long id;
 
     @Column(name = "role_name", nullable = false)
+    @Enumerated(EnumType.STRING)
     private RolesEnum name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
-
 
     public Role(RolesEnum name) {
         this.name = name;

@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +19,7 @@ import jakarta.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthEntryPoint authEntryPoint;
@@ -43,8 +46,27 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-//				.requestMatchers(HttpMethod.POST,"/api/product/**").hasAuthority("ADMIN")
-                .anyRequest().permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/product/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/product/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/product/**").hasAuthority("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/combo/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/combo/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/combo/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/combo/**").hasAuthority("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/category/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/category/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/category/**").hasAuthority("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/table/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/table/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/table/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/table/**").hasAuthority("ADMIN")
+
+
                 .and()
                 .httpBasic();
 
