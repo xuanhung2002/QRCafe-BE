@@ -25,6 +25,17 @@ public class UserController {
   Converter converter;
 
 
+  @GetMapping("/allUsers")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF')")
+  public ResponseEntity<?> getAllUsers(){
+    List<User> users = userService.getAllUsers();
+    if(users != null){
+      return ResponseEntity.status(HttpStatus.OK).body(users.stream().map(converter::toUserDTO).toList());
+    }else {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+  }
+
   @GetMapping("/userInformation")
   public ResponseEntity<?> getUserInformation(Authentication authentication){
     if (authentication == null || !authentication.isAuthenticated()) {

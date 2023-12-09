@@ -1,6 +1,7 @@
 package com.qrcafe.controller;
 
 import com.qrcafe.converter.Converter;
+import com.qrcafe.dto.RegisterDTO;
 import com.qrcafe.entity.User;
 import com.qrcafe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,36 +24,57 @@ public class AdminActionController {
 
   @GetMapping("/allStaff")
   @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF')")
-  public ResponseEntity<?> getAllStaff(){
+  public ResponseEntity<?> getAllStaff() {
     List<User> users = userService.getAllStaff();
-    if(users != null){
+    if (users != null) {
       return ResponseEntity.status(HttpStatus.OK).body(users.stream().map(converter::toUserDTO));
-    }else {
+    } else {
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
   }
 
+  @PostMapping("/createAccountForStaff")
+  @PreAuthorize("hasAnyAuthority('ADMIN')")
+  public ResponseEntity<?> createAccountForStaff(@RequestBody RegisterDTO registerDTO) {
+    boolean res = userService.createAccountForStaff(registerDTO);
+    if (res) {
+      return ResponseEntity.status(HttpStatus.OK).body("Success!!!");
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please check inputtt");
+    }
+  }
+
+  @DeleteMapping("/deleteUserAccount")
+  @PreAuthorize("hasAnyAuthority('ADMIN')")
+  public ResponseEntity<?> deleteUserAccount(@RequestParam String username) {
+    boolean res = userService.deleteUserAccount(username);
+    if (res) {
+      return ResponseEntity.status(HttpStatus.OK).body("Delete success");
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Delete failed");
+    }
+  }
+
+
   @PostMapping("/grantPermissionForStaff")
   @PreAuthorize("hasAnyAuthority('ADMIN')")
   public ResponseEntity<?> grantPermissionForStaff(@RequestParam(value = "staffUsername", required = true) String staffUsername,
-                                                   @RequestParam(value = "role", required = true) String role)
-  {
+                                                   @RequestParam(value = "role", required = true) String role) {
     boolean res = userService.grantPermissionForStaff(staffUsername, role);
-    if(res){
+    if (res) {
       return ResponseEntity.status(HttpStatus.OK).body("Success!!!");
-    }else {
+    } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please check inputtt");
     }
   }
 
   @PutMapping("/deletePermissionOfStaff")
   @PreAuthorize("hasAnyAuthority('ADMIN')")
-  public ResponseEntity<?> deletePermissionOfStaff(@RequestParam(value = "staffUsername", required = true) String staffUsername)
-  {
+  public ResponseEntity<?> deletePermissionOfStaff(@RequestParam(value = "staffUsername", required = true) String staffUsername) {
     boolean res = userService.deletePermissionOfStaff(staffUsername);
-    if(res){
+    if (res) {
       return ResponseEntity.status(HttpStatus.OK).body("Success!!!");
-    }else {
+    } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please check inputtt");
     }
   }
@@ -60,7 +82,7 @@ public class AdminActionController {
   //new password default: 12345678
   @PutMapping("/resetUserPassword")
   @PreAuthorize("hasAnyAuthority('ADMIN')")
-  public ResponseEntity<?> resetUserPassword(@RequestParam(value = "username", required = true) String username){
+  public ResponseEntity<?> resetUserPassword(@RequestParam(value = "username", required = true) String username) {
     userService.resetUserPassword(username);
     return ResponseEntity.status(HttpStatus.OK).body("OKKK");
   }

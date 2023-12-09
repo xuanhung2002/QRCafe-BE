@@ -1,6 +1,7 @@
 package com.qrcafe.service.impl;
 
 
+import com.qrcafe.dto.RegisterDTO;
 import com.qrcafe.dto.UserLocationDTO;
 import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -143,5 +145,42 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> getAllStaff() {
     return userRepository.findUsersByRole(RolesEnum.STAFF);
+  }
+
+  @Override
+  public boolean createAccountForStaff(RegisterDTO registerDTO) {
+    if(userRepository.existsByUsername(registerDTO.getUsername())){
+      return false;
+    }else {
+      User user = User.builder()
+                      .username(registerDTO.getUsername())
+                      .password(passwordEncoder.encode((registerDTO.getPassword())))
+                      .email(registerDTO.getEmail())
+                      .build();
+
+      Role role = roleService.getRoleByRoleName(RolesEnum.STAFF);
+      Set<Role> roles = new HashSet<>();
+      roles.add(role);
+      user.setRoles(roles);
+      userRepository.save(user);
+      return true;
+    }
+  }
+
+  @Override
+  public boolean deleteUserAccount(String username) {
+    User user = userRepository.findByUsername(username);
+    if(user != null){
+      userRepository.delete(user);
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  @Override
+  public List<User> getAllUsers() {
+    return userRepository.findAll();
   }
 }
