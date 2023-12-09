@@ -13,7 +13,8 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("https://qr-order-client.netlify.app");       
-        corsConfiguration.addAllowedOrigin("https://qr-order-admin.netlify.app");  
+        corsConfiguration.addAllowedOrigin("https://qr-order-admin.netlify.app");        
+  
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
