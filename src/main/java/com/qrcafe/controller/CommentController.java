@@ -34,7 +34,6 @@ public class CommentController {
     Converter converter;
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN', 'CUSTOMER')")
     public ResponseEntity<?> getCommentOfProduct(@RequestParam("productId") Long productId) {
         List<Comment> comments = commentService.getCommentsByProductId(productId);
         if (comments != null) {

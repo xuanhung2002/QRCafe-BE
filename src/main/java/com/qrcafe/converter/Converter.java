@@ -164,10 +164,12 @@ public class Converter {
 
     public UserDTO toUserDTO(User user){
         return UserDTO.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .dateOfBirth(user.getDateOfBirth())
                 .fullName(user.getFullName())
+                .roles(user.getRoles().stream().map(Role::getName).toList())
                 .build();
     }
 }
