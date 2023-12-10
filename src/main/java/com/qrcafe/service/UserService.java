@@ -2,6 +2,7 @@ package com.qrcafe.service;
 
 import com.qrcafe.dto.RegisterDTO;
 import com.qrcafe.dto.UserLocationDTO;
+import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
 import com.qrcafe.entity.UserLocation;
 
@@ -33,4 +34,6 @@ public interface UserService {
     boolean deleteUserAccount(String username);
 
     List<User> getAllUsers();
+
+    List<Role> getRoleByUserName(String username);
 }
