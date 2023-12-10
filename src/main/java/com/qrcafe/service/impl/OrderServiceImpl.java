@@ -268,7 +268,7 @@ public class OrderServiceImpl implements OrderService {
     try {
       Order order = getOrderById(idOrder);
       order.setStatus(OrderStatus.DONE);
-      order.setPaymentMethod(PaymentMethod.valueOf(paymentMethod));
+      order.setPaymentMethod(PaymentMethod.valueOf(paymentMethod.toUpperCase()));
       order.setPaymentTime(LocalDateTime.now());
       order.setPaid(true);
       orderRepository.save(order);
