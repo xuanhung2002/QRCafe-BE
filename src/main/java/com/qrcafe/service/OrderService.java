@@ -32,6 +32,7 @@ public interface OrderService {
 
 
     Order getCurrentOrderOfTable(UUID idTable);
-    void confirmDomeOrderOfTable(Long idOrder);
+    void confirmDomeOrderOfTable(Long idOrder, String paymentMethod);
+    void comfirmDoneOnlineOrder(Long idOrder);
 
 }

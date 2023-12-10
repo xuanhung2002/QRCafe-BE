@@ -261,11 +261,35 @@ public class OrderServiceImpl implements OrderService {
 
   @Transactional
   @Override
-  public void confirmDomeOrderOfTable(Long idOrder) {
-    Order order = getOrderById(idOrder);
-    Table table = order.getTable();
-    order.setStatus(OrderStatus.DONE);
-    table.setStatus(TableStatus.EMPTY);
+  public void confirmDomeOrderOfTable(Long idOrder, String paymentMethod) {
+    try {
+      Order order = getOrderById(idOrder);
+      Table table = order.getTable();
+      order.setStatus(OrderStatus.DONE);
+      order.setPaymentMethod(PaymentMethod.valueOf(paymentMethod));
+      order.setPaymentTime(LocalDateTime.now());
+      order.setPaid(true);
+      table.setStatus(TableStatus.EMPTY);
+      orderRepository.save(order);
+      tableService.save(table);
+    } catch (Exception e) {
+      throw new RuntimeException("Error confirming dome order of table", e);
+    }
+  }
+
+  @Override
+  public void comfirmDoneOnlineOrder(Long idOrder) {
+    try {
+      Order order = getOrderById(idOrder);
+      order.setStatus(OrderStatus.DONE);
+      if(order.getPaymentMethod() == PaymentMethod.CASH && order.getPaymentTime() == null){
+        order.setPaymentTime(LocalDateTime.now());
+      }
+      order.setPaid(true);
+      orderRepository.save(order);
+    } catch (Exception e) {
+      throw new RuntimeException("Error confirming done order", e);
+    }
   }
 
 }
