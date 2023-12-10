@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "User_information")
+@Table(name = "user_location")
 public class UserLocation {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

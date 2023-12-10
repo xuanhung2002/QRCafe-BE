@@ -8,6 +8,7 @@ import com.qrcafe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,17 @@ public class UserController {
   @Autowired
   Converter converter;
 
+
+  @GetMapping("/allUsers")
+  @PreAuthorize("hasAnyAuthority('ADMIN', 'STAFF')")
+  public ResponseEntity<?> getAllUsers(){
+    List<User> users = userService.getAllUsers();
+    if(users != null){
+      return ResponseEntity.status(HttpStatus.OK).body(users.stream().map(converter::toUserDTO).toList());
+    }else {
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+  }
 
   @GetMapping("/userInformation")
   public ResponseEntity<?> getUserInformation(Authentication authentication){

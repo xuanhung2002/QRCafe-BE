@@ -1,8 +1,6 @@
 package com.qrcafe.entity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,22 +20,22 @@ public class CustomUserDetails implements UserDetails {
 
 	private User user;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        // Mặc định mình sẽ để tất cả là ROLE_USER. Để demo cho đơn giản.
-//        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-
-//    	return Collections.singletonList(new SimpleGrantedAuthority(this.getUser().getRoles().getName()));
-
-    	return null;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    Set<Role> roles = user.getRoles();
+    List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    for (Role role : roles) {
+      authorities.add(new SimpleGrantedAuthority(role.getName().name()));
     }
+    return authorities;
+  }
 
 
 	public CustomUserDetails(User user) {
 		this.user = user;
 	}
 	
-    public User getUser() {
+  public User getUser() {
 		return user;
 	}
 
