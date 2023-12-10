@@ -223,7 +223,7 @@ public class OrderController {
     @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
     @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> confirmDoneOrderOfTable(@PathVariable Long idOrder,
-                                                     @RequestParam String paymentMethod) {
+                                                     @RequestParam("paymentMethod") String paymentMethod) {
         try {
             orderService.confirmDomeOrderOfTable(idOrder, paymentMethod);
             return ResponseEntity.status(HttpStatus.OK).body("Success!!");

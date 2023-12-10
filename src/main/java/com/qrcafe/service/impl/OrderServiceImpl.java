@@ -8,6 +8,7 @@ import com.qrcafe.enums.OrderType;
 import com.qrcafe.enums.PaymentMethod;
 import com.qrcafe.enums.TableStatus;
 import com.qrcafe.repository.OrderRepository;
+import com.qrcafe.repository.TableRepository;
 import com.qrcafe.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class OrderServiceImpl implements OrderService {
 
   @Autowired
   TableService tableService;
+  @Autowired
+  TableRepository tableRepository;
 
   @Autowired
   Converter converter;
@@ -264,15 +267,16 @@ public class OrderServiceImpl implements OrderService {
   public void confirmDomeOrderOfTable(Long idOrder, String paymentMethod) {
     try {
       Order order = getOrderById(idOrder);
-      Table table = order.getTable();
       order.setStatus(OrderStatus.DONE);
       order.setPaymentMethod(PaymentMethod.valueOf(paymentMethod));
       order.setPaymentTime(LocalDateTime.now());
       order.setPaid(true);
-      table.setStatus(TableStatus.EMPTY);
       orderRepository.save(order);
-      tableService.save(table);
+      Table table = order.getTable();
+      table.setStatus(TableStatus.EMPTY);
+      tableRepository.save(table);
     } catch (Exception e) {
+      e.printStackTrace();
       throw new RuntimeException("Error confirming dome order of table", e);
     }
   }
