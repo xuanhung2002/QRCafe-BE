@@ -47,7 +47,7 @@ public class Initializer implements CommandLineRunner {
         // Create a user and associate the role with it
         User checkedUser = userRepository.findByUsername("admin");
         if(checkedUser != null){
-            checkedUser.setPassword("admin12345");
+            checkedUser.setPassword(passwordEncoder.encode("admin12345"));
             userRepository.save(checkedUser);
         }
         else {
