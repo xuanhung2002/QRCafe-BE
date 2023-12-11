@@ -1,25 +1,38 @@
 package com.qrcafe.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.qrcafe.converter.Converter;
-import com.qrcafe.dto.*;
-import com.qrcafe.entity.*;
+import com.qrcafe.dto.OrderDetailRequestDTO;
+import com.qrcafe.dto.OrderOfflineRequestDTO;
+import com.qrcafe.dto.OrderOnlineRequestDTO;
+import com.qrcafe.entity.CartItem;
+import com.qrcafe.entity.Order;
+import com.qrcafe.entity.OrderDetail;
+import com.qrcafe.entity.Table;
 import com.qrcafe.enums.OrderStatus;
 import com.qrcafe.enums.OrderType;
 import com.qrcafe.enums.PaymentMethod;
 import com.qrcafe.enums.TableStatus;
 import com.qrcafe.repository.OrderRepository;
 import com.qrcafe.repository.TableRepository;
-import com.qrcafe.service.*;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.qrcafe.service.CartItemService;
+import com.qrcafe.service.ComboService;
+import com.qrcafe.service.OrderDetailService;
+import com.qrcafe.service.OrderService;
+import com.qrcafe.service.ProductService;
+import com.qrcafe.service.TableService;
+import com.qrcafe.service.UserService;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -46,7 +59,8 @@ public class OrderServiceImpl implements OrderService {
   @Autowired
   UserService userService;
 
-  @Autowired CartItemService cartItemService;
+  @Autowired
+  CartItemService cartItemService;
 
   @Override
   public Order getOrderById(Long orderId) {
@@ -71,26 +85,28 @@ public class OrderServiceImpl implements OrderService {
 
   @Transactional
   @Override
-  public Order addOrderOffline(OrderOfflineRequestDTO orderOfflineRequestDTO) {
+  public Order addOrderOffline(OrderOfflineRequestDTO orderOfflineRequestDTO) { // TODO add table_access_key to
+                                                                                // OrderOfflineRequestDTO
     if (tableService.getTableById(orderOfflineRequestDTO.getTableId()).getStatus().equals(TableStatus.EMPTY)) {
       Order order = Order.builder()
-              .orderType(OrderType.OFFLINE)
-              .status(OrderStatus.PENDING)
-              .table(tableService.getTableById(orderOfflineRequestDTO.getTableId()))
-              .orderTime(LocalDateTime.now())
-              .note(orderOfflineRequestDTO.getNote())
-              .totalPrice(calcTotalPrice(orderOfflineRequestDTO.getOrderDetails()))
-              .isPaid(false)
-              .build();
+          .orderType(OrderType.OFFLINE)
+          .status(OrderStatus.PENDING)
+          .table(tableService.getTableById(orderOfflineRequestDTO.getTableId()))
+          .orderTime(LocalDateTime.now())
+          .note(orderOfflineRequestDTO.getNote())
+          .totalPrice(calcTotalPrice(orderOfflineRequestDTO.getOrderDetails()))
+          .isPaid(false)
+          .build();
       order.getTable().setStatus(TableStatus.UNEMPTY);
 
       Order savedOrder = orderRepository.save(order);
-      List<OrderDetail> orderDetails = orderOfflineRequestDTO.getOrderDetails().stream().map(t -> converter.toOrderDetailEntity(t)).toList();
+      List<OrderDetail> orderDetails = orderOfflineRequestDTO.getOrderDetails().stream()
+          .map(t -> converter.toOrderDetailEntity(t)).toList();
       for (OrderDetail orderDetail : orderDetails) {
         orderDetail.setOrder(savedOrder);
       }
       orderDetailService.saveAll(orderDetails);
-      savedOrder.setOrderDetails(orderDetails); //to show in API response (it doesn't affect to db)
+      savedOrder.setOrderDetails(orderDetails); // to show in API response (it doesn't affect to db)
 
       return savedOrder;
     } else {
@@ -102,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Order addOrderOfflineDetails(Order order, List<OrderDetailRequestDTO> orderDetailDTOS) {
 
-    //validate
+    // validate
     for (OrderDetailRequestDTO orderDetailDTO : orderDetailDTOS) {
       if (orderDetailDTO.getProductId() == null) {
         if (!comboService.existedById(orderDetailDTO.getComboId())) {
@@ -140,9 +156,9 @@ public class OrderServiceImpl implements OrderService {
       }
       if (!foundMatch) {
         OrderDetail addOrderDetail = OrderDetail.builder()
-                .order(order)
-                .product(newOrderDetail.getProduct())
-                .quantity(newOrderDetail.getQuantity()).build();
+            .order(order)
+            .product(newOrderDetail.getProduct())
+            .quantity(newOrderDetail.getQuantity()).build();
         tempOrderDetails.add(addOrderDetail);
       }
     } else {
@@ -157,15 +173,14 @@ public class OrderServiceImpl implements OrderService {
       }
       if (!foundMatch) {
         OrderDetail addOrderDetail = OrderDetail.builder()
-                .order(order)
-                .combo(newOrderDetail.getCombo())
-                .quantity(newOrderDetail.getQuantity()).build();
+            .order(order)
+            .combo(newOrderDetail.getCombo())
+            .quantity(newOrderDetail.getQuantity()).build();
         tempOrderDetails.add(addOrderDetail);
       }
     }
     order.getOrderDetails().addAll(tempOrderDetails);
   }
-
 
   @Override
   public Double calcTotalPrice(List<OrderDetailRequestDTO> orderDetailDTOS) {
@@ -185,12 +200,11 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Double calcTotalPriceOfCartItems(List<Long> cartItemIds) {
     double totalPrice = 0d;
-    for (Long cartItemId : cartItemIds
-    ) {
+    for (Long cartItemId : cartItemIds) {
       CartItem cartItem = cartItemService.getCartItemById(cartItemId);
       if (cartItem.getProduct() != null) {
         totalPrice += cartItem.getProduct().getPrice() * cartItem.getQuantity();
-      }else {
+      } else {
         totalPrice += cartItem.getCombo().getPrice() * cartItem.getQuantity();
       }
     }
@@ -201,34 +215,33 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Order addOrderOnline(OrderOnlineRequestDTO orderOnlineRequestDTO, String username) {
     Order order = Order.builder()
-            .user(userService.getUserByUsername(username))
-            .location(orderOnlineRequestDTO.getLocation())
-            .note(orderOnlineRequestDTO.getNote())
-            .paymentMethod(PaymentMethod.valueOf(orderOnlineRequestDTO.getPaymentMethod().toUpperCase()))
-            .isPaid(orderOnlineRequestDTO.isPaid())
-            .orderTime(LocalDateTime.now())
-            .paymentTime(orderOnlineRequestDTO.isPaid() ? LocalDateTime.now() : null)
-            .status(OrderStatus.PENDING)
-            .orderType(OrderType.ONLINE)
-            .phoneNumber(orderOnlineRequestDTO.getPhoneNumber())
-            .totalPrice(calcTotalPriceOfCartItems(orderOnlineRequestDTO.getCartItemIds()))
-            .build();
+        .user(userService.getUserByUsername(username))
+        .location(orderOnlineRequestDTO.getLocation())
+        .note(orderOnlineRequestDTO.getNote())
+        .paymentMethod(PaymentMethod.valueOf(orderOnlineRequestDTO.getPaymentMethod().toUpperCase()))
+        .isPaid(orderOnlineRequestDTO.isPaid())
+        .orderTime(LocalDateTime.now())
+        .paymentTime(orderOnlineRequestDTO.isPaid() ? LocalDateTime.now() : null)
+        .status(OrderStatus.PENDING)
+        .orderType(OrderType.ONLINE)
+        .phoneNumber(orderOnlineRequestDTO.getPhoneNumber())
+        .totalPrice(calcTotalPriceOfCartItems(orderOnlineRequestDTO.getCartItemIds()))
+        .build();
 
     Order savedOrder = orderRepository.save(order);
     List<OrderDetail> orderDetails = orderOnlineRequestDTO.getCartItemIds().stream().map(t -> {
       CartItem cartItem = cartItemService.getCartItemById(t);
       cartItemService.delete(cartItem);
       return OrderDetail.builder().quantity(cartItem.getQuantity())
-              .combo(cartItem.getCombo())
-              .product(cartItem.getProduct()).build();
+          .combo(cartItem.getCombo())
+          .product(cartItem.getProduct()).build();
     }).toList();
     for (OrderDetail orderDetail : orderDetails) {
       orderDetail.setOrder(savedOrder);
     }
     orderDetailService.saveAll(orderDetails);
 
-
-    savedOrder.setOrderDetails(orderDetails); //to show in API response (it doesn't affect to db)
+    savedOrder.setOrderDetails(orderDetails); // to show in API response (it doesn't affect to db)
     return savedOrder;
   }
 
@@ -274,6 +287,7 @@ public class OrderServiceImpl implements OrderService {
       orderRepository.save(order);
       Table table = order.getTable();
       table.setStatus(TableStatus.EMPTY);
+      table.setStatus(TableStatus.EMPTY);
       tableRepository.save(table);
     } catch (Exception e) {
       e.printStackTrace();
@@ -286,7 +300,7 @@ public class OrderServiceImpl implements OrderService {
     try {
       Order order = getOrderById(idOrder);
       order.setStatus(OrderStatus.DONE);
-      if(order.getPaymentMethod() == PaymentMethod.CASH && order.getPaymentTime() == null){
+      if (order.getPaymentMethod() == PaymentMethod.CASH && order.getPaymentTime() == null) {
         order.setPaymentTime(LocalDateTime.now());
       }
       order.setPaid(true);
