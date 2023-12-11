@@ -1,18 +1,17 @@
 package com.qrcafe.initalization;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
 import com.qrcafe.enums.RolesEnum;
 import com.qrcafe.repository.RoleRepository;
 import com.qrcafe.repository.UserRepository;
-import lombok.extern.flogger.Flogger;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class Initializer implements CommandLineRunner {
