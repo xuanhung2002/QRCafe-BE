@@ -1,24 +1,37 @@
 package com.qrcafe.service.impl;
 
-import com.qrcafe.converter.Converter;
-import com.qrcafe.dto.*;
-import com.qrcafe.entity.*;
-import com.qrcafe.enums.OrderStatus;
-import com.qrcafe.enums.OrderType;
-import com.qrcafe.enums.PaymentMethod;
-import com.qrcafe.enums.TableStatus;
-import com.qrcafe.repository.OrderRepository;
-import com.qrcafe.service.*;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.qrcafe.converter.Converter;
+import com.qrcafe.dto.OrderDetailRequestDTO;
+import com.qrcafe.dto.OrderOfflineRequestDTO;
+import com.qrcafe.dto.OrderOnlineRequestDTO;
+import com.qrcafe.entity.CartItem;
+import com.qrcafe.entity.Order;
+import com.qrcafe.entity.OrderDetail;
+import com.qrcafe.entity.Table;
+import com.qrcafe.enums.OrderStatus;
+import com.qrcafe.enums.OrderType;
+import com.qrcafe.enums.PaymentMethod;
+import com.qrcafe.enums.TableStatus;
+import com.qrcafe.repository.OrderRepository;
+import com.qrcafe.service.CartItemService;
+import com.qrcafe.service.ComboService;
+import com.qrcafe.service.OrderDetailService;
+import com.qrcafe.service.OrderService;
+import com.qrcafe.service.ProductService;
+import com.qrcafe.service.TableService;
+import com.qrcafe.service.UserService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -68,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Transactional
   @Override
-  public Order addOrderOffline(OrderOfflineRequestDTO orderOfflineRequestDTO) {
+  public Order addOrderOffline(OrderOfflineRequestDTO orderOfflineRequestDTO) { // TODO add table_access_key to OrderOfflineRequestDTO
     if (tableService.getTableById(orderOfflineRequestDTO.getTableId()).getStatus().equals(TableStatus.EMPTY)) {
       Order order = Order.builder()
               .orderType(OrderType.OFFLINE)
@@ -79,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
               .totalPrice(calcTotalPrice(orderOfflineRequestDTO.getOrderDetails()))
               .isPaid(false)
               .build();
-      order.getTable().setStatus(TableStatus.UNEMPTY);
+      order.getTable().setStatus(TableStatus.UNEMPTY); 
 
       Order savedOrder = orderRepository.save(order);
       List<OrderDetail> orderDetails = orderOfflineRequestDTO.getOrderDetails().stream().map(t -> converter.toOrderDetailEntity(t)).toList();
@@ -266,6 +279,8 @@ public class OrderServiceImpl implements OrderService {
     Table table = order.getTable();
     order.setStatus(OrderStatus.DONE);
     table.setStatus(TableStatus.EMPTY);
-  }
+    table.setTableAccessKey(null);
+    // TODO clear table_access_key
+  } 
 
 }
