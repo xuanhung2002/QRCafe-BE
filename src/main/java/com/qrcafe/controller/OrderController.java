@@ -12,13 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.qrcafe.converter.Converter;
 import com.qrcafe.dto.NewOrderDetailResponseDTO;
@@ -228,12 +222,23 @@ public class OrderController {
 
     @PutMapping("/confirmDoneOrderOfTable/{idOrder}")
     @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
-    public ResponseEntity<?> confirmDomeOrderOfTable(@PathVariable Long idOrder) {
+    public ResponseEntity<?> confirmDoneOrderOfTable(@PathVariable Long idOrder,
+                                                     @RequestParam("paymentMethod") String paymentMethod) {
         try {
-            orderService.confirmDomeOrderOfTable(idOrder);
+            orderService.confirmDomeOrderOfTable(idOrder, paymentMethod);
             return ResponseEntity.status(HttpStatus.OK).body("Success!!");
         } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/comfirmDoneOnlineOrder/{idOrder}")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<?> comfirmDoneOrderOnline(@PathVariable Long idOrder){
+        try {
+            orderService.comfirmDoneOnlineOrder(idOrder);
+            return ResponseEntity.status(HttpStatus.OK).body("Success!!");
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
