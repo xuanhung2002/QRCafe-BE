@@ -1,5 +1,6 @@
 package com.qrcafe.entity;
 
+import com.qrcafe.oauth2.OAuth2Provider;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -24,7 +25,7 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column()
     private String password;
 
     @Column(nullable = false)
@@ -35,6 +36,8 @@ public class User {
 
     @Column
     private Date dateOfBirth;
+
+    private OAuth2Provider oAuth2Provider;
 
     @OneToMany(mappedBy = "user")
     private List<UserLocation> userLocations;

@@ -49,4 +49,22 @@ public class TableController {
         }
     }
 
+    @GetMapping("/addTableAccessKey/{tableId}/{tableAccessKey}")
+    public ResponseEntity<?> addTableAccessKey(@PathVariable("tableId") UUID tableId,
+                                                @PathVariable("tableAccessKey") UUID tableAccessKey){
+        try {
+            Object tableObject = tableService.getTableById(tableId);
+            if (tableObject == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No item have this ID");
+            } else {
+                Table table = (Table)tableObject;
+                table.setTableAccessKey(tableAccessKey);
+                tableService.updateAccessKey(table);
+                return ResponseEntity.status(HttpStatus.OK).body(tableAccessKey);
+            }
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Can't set table access key");
+        }
+    }
 }

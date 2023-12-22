@@ -1,13 +1,14 @@
 package com.qrcafe.service.impl;
 
-import com.qrcafe.entity.Table;
-import com.qrcafe.repository.TableRepository;
-import com.qrcafe.service.TableService;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import com.qrcafe.entity.Table;
+import com.qrcafe.repository.TableRepository;
+import com.qrcafe.service.TableService;
 
 @Service
 public class TableServiceImpl implements TableService {
@@ -23,6 +24,11 @@ public class TableServiceImpl implements TableService {
         if(tableRepository.existsByName(table.getName())){
             throw new IllegalArgumentException("this table name is existed");
         }
+        return tableRepository.save(table);
+    }
+
+    @Override
+    public Table updateAccessKey(Table table) {
         return tableRepository.save(table);
     }
 
