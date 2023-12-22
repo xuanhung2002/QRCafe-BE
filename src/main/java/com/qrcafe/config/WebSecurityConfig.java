@@ -1,5 +1,8 @@
 package com.qrcafe.config;
 
+import com.qrcafe.oauth2.CustomAuthenticationSuccessHandler;
+import com.qrcafe.oauth2.CustomOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,18 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
+
+    private final CustomOAuth2UserService customOauth2UserService;
+
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     private final JwtAuthEntryPoint authEntryPoint;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
-    public WebSecurityConfig(JwtAuthEntryPoint authEntryPoint) {
-        this.authEntryPoint = authEntryPoint;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,6 +47,7 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/auth/**", "/oauth2/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/product/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/product/**").hasAuthority("ADMIN")
@@ -64,9 +68,14 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/table/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/table/**").hasAuthority("ADMIN")
 
-
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .and()
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint().userService(customOauth2UserService)
+                        .and()
+                        .successHandler(customAuthenticationSuccessHandler));
+
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -81,7 +90,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
+    static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

@@ -24,6 +24,11 @@ import com.qrcafe.enums.PaymentMethod;
 import com.qrcafe.enums.TableStatus;
 import com.qrcafe.repository.OrderRepository;
 import com.qrcafe.repository.TableRepository;
+import com.qrcafe.service.*;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.qrcafe.service.CartItemService;
 import com.qrcafe.service.ComboService;
 import com.qrcafe.service.OrderDetailService;
@@ -31,7 +36,6 @@ import com.qrcafe.service.OrderService;
 import com.qrcafe.service.ProductService;
 import com.qrcafe.service.TableService;
 import com.qrcafe.service.UserService;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -286,7 +290,6 @@ public class OrderServiceImpl implements OrderService {
       order.setPaid(true);
       orderRepository.save(order);
       Table table = order.getTable();
-      table.setStatus(TableStatus.EMPTY);
       table.setStatus(TableStatus.EMPTY);
       tableRepository.save(table);
     } catch (Exception e) {
