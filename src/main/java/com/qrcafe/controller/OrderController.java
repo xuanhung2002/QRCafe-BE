@@ -132,6 +132,15 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOfflineResponseDTO(order));
     }
 
+    @GetMapping("onlineOrder/{id}")
+    public ResponseEntity<?> getOnlineOrdersById(@PathVariable Long id) {
+        Order order = orderService.getOrderById(id);
+        if (order == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This order is not existed");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOnlineResponseDTO(order));
+    }
+
     @PutMapping("/updateStatusOrder/{orderId}")
     @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
     public ResponseEntity<?> updateStatusOrder(@PathVariable Long orderId,
