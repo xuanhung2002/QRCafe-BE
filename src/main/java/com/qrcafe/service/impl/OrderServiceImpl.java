@@ -291,6 +291,7 @@ public class OrderServiceImpl implements OrderService {
       orderRepository.save(order);
       Table table = order.getTable();
       table.setStatus(TableStatus.EMPTY);
+      table.setTableAccessKey(null);
       tableRepository.save(table);
     } catch (Exception e) {
       e.printStackTrace();
