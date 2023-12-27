@@ -19,4 +19,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Order getOrderByTableAndStatusNot(Table table, OrderStatus status);
 
+
 }

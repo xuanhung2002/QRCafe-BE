@@ -313,5 +313,9 @@ public class OrderServiceImpl implements OrderService {
       throw new RuntimeException("Error confirming done order", e);
     }
   }
+  @Override
+  public List<Order> getAllOrder() {
+    return orderRepository.findAll();
+  }
 
 }

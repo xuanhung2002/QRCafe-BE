@@ -122,6 +122,13 @@ public class Converter {
                 .orderDetails(order.getOrderDetails().stream().map(this::toOrderDetailResponseDTO).collect(Collectors.toList()))
                 .build();
     }
+    public OrderDTO toOrderDTO(Order order){
+        return OrderDTO.builder()
+                .id(order.getId())
+                .paymentTime(order.getPaymentTime())
+                .totalPrice(order.getTotalPrice())
+                .build();
+    }
 
     public CartItemDTO toCartItemDTO(CartItem cartItem){
         if(cartItem.getProduct() != null){

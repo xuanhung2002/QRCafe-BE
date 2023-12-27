@@ -35,4 +35,6 @@ public interface OrderService {
     void confirmDomeOrderOfTable(Long idOrder, String paymentMethod);
     void comfirmDoneOnlineOrder(Long idOrder);
 
+    public List<Order> getAllOrder();
+
 }
