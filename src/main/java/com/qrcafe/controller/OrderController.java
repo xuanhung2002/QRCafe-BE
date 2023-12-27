@@ -252,4 +252,17 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/getAllOrder")
+  //  @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<?> getAllOrder() {
+        List<Order> orders = orderService.getAllOrder();
+        if (orders.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No orders");
+        } else {
+            // orders.stream().map(converter::toOrderOfflineDTO).forEach(System.out::println);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(orders.stream().map(converter::toOrderDTO).toList());
+        }
+    }
+
 }
