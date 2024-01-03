@@ -38,6 +38,6 @@ public class QRCodeController {
           @PathVariable("width") Integer width,
           @PathVariable("height") Integer height)
           throws Exception {
-    return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.getQRCodeImage(rootUrl, Long.parseLong(idTable), width, height));
+    return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.getQRCodeImage(rootUrl, idTable, width, height));
   }
 }
