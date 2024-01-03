@@ -30,14 +30,13 @@ public class QRCodeController {
     qrCodeService.generateQRCodeImage(codeText, width, height, QR_CODE_IMAGE_PATH);
   }
 
-  @GetMapping(value = "/generateQRCode/{rootUrl}/{idTable}/{width}/{height}")
+  @GetMapping(value = "/generateQRCode/{idTable}/{width}/{height}")
   @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
   public ResponseEntity<byte[]> generateQRCode(
-          @PathVariable("rootUrl") String rootUrl,
           @PathVariable("idTable") String idTable,
           @PathVariable("width") Integer width,
           @PathVariable("height") Integer height)
           throws Exception {
-    return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.getQRCodeImage(rootUrl, idTable, width, height));
+    return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.getQRCodeImage( idTable, width, height));
   }
 }
