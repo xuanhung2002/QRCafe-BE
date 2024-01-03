@@ -3,6 +3,7 @@ package com.qrcafe.service;
 import java.util.List;
 import java.util.UUID;
 
+import com.qrcafe.entity.Category;
 import com.qrcafe.entity.Table;
 
 public interface TableService {
@@ -13,6 +14,8 @@ public interface TableService {
     Table updateAccessKey(Table table);
 
     List<Table> getAllTable();
+
+    void deleteTable(Table table);
 
 
 }

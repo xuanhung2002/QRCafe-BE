@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category save(Category category) {
 
         if(categoryRepository.existsByName(category.getName())){
-            return null;
+            throw new IllegalArgumentException("this category name is existed");
         }
         else {
             return categoryRepository.save(category);
