@@ -6,6 +6,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.qrcafe.service.QRCodeService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,9 @@ import java.nio.file.Path;
 
 @Service
 public class QRCodeServiceImpl implements QRCodeService {
+
+  @Value("${rootURL}")
+  private String rootURL;
 
   public void generateQRCodeImage(String text, int width, int height, String filePath)
           throws WriterException, IOException {
@@ -27,9 +31,10 @@ public class QRCodeServiceImpl implements QRCodeService {
   }
 
 
-  public byte[] getQRCodeImage(String rootUrl, String idTable, int width, int height) throws WriterException, IOException {
+  public byte[] getQRCodeImage(String idTable, int width, int height) throws WriterException, IOException {
     QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    String url = rootUrl + "/home/" + idTable;
+    String url = rootURL + "home/" + idTable;
+    System.out.println("url: " + url);
     BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
 
     ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
