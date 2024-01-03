@@ -21,13 +21,12 @@ public class CategoryController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addCategory(@RequestBody Category category){
-
-        Category c = categoryService.save(category);
-        if(c == null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("This category name has existed");
+        try {
+            Category c = categoryService.save(category);
+                return ResponseEntity.status(HttpStatus.OK).body(c);
         }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body(c);
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 
@@ -46,15 +45,20 @@ public class CategoryController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable Long id, @RequestParam(value = "name",required = true) String name){
 
-        Category category = categoryService.getCategoryById(id);
-        if(category != null){
-            category.setName(name);
-            Category savedCategory = categoryService.save(category);
-            return ResponseEntity.status(HttpStatus.OK).body(savedCategory);
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This category is not existed");
-        }
+       try {
+           Category category = categoryService.getCategoryById(id);
+           if(category != null){
+               category.setName(name);
+               Category savedCategory = categoryService.save(category);
+               return ResponseEntity.status(HttpStatus.OK).body(savedCategory);
+           }
+           else {
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("This category is not existed");
+           }
+       }
+       catch (Exception e){
+           return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+       }
 
     }
 

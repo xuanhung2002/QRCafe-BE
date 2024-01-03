@@ -27,9 +27,9 @@ public class QRCodeServiceImpl implements QRCodeService {
   }
 
 
-  public byte[] getQRCodeImage(String rootUrl, Long idTable, int width, int height) throws WriterException, IOException {
+  public byte[] getQRCodeImage(String rootUrl, String idTable, int width, int height) throws WriterException, IOException {
     QRCodeWriter qrCodeWriter = new QRCodeWriter();
-    String url = rootUrl + "/" + idTable;
+    String url = rootUrl + "/home/" + idTable;
     BitMatrix bitMatrix = qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, width, height);
 
     ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();

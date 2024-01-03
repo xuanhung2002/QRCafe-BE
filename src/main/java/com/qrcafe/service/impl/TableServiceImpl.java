@@ -36,4 +36,9 @@ public class TableServiceImpl implements TableService {
     public List<Table> getAllTable() {
         return tableRepository.findAll();
     }
+
+    @Override
+    public void deleteTable(Table table) {
+        tableRepository.delete(table);
+    }
 }
