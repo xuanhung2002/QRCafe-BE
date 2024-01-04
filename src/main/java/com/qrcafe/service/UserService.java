@@ -1,6 +1,7 @@
 package com.qrcafe.service;
 
 import com.qrcafe.dto.RegisterDTO;
+import com.qrcafe.dto.UserDTO;
 import com.qrcafe.dto.UserLocationDTO;
 import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
@@ -20,6 +21,9 @@ public interface UserService {
     UserLocation getUserLocationByIdLocation(Long id);
 
     boolean updateUserLocation(String username, UserLocationDTO userLocationDTO);
+
+    boolean updateUserInformation(String username, UserDTO userDTO);
+
 
     UserLocation addUserLocation(String username, UserLocationDTO userLocationDTO);
 

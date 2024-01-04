@@ -1,6 +1,7 @@
 package com.qrcafe.controller;
 
 import com.qrcafe.converter.Converter;
+import com.qrcafe.dto.UserDTO;
 import com.qrcafe.dto.UserLocationDTO;
 import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
@@ -108,6 +109,30 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Update failed!");
         }
     }
+
+    /*
+    Update :
+    - full name
+    - email
+    - date of birth
+     */
+    @PutMapping("/updateUserInformation")
+    public ResponseEntity<?> updateUserInformation(Authentication authentication, @RequestBody UserDTO userDTO) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+
+        boolean updated = userService.updateUserInformation(username, userDTO);
+        if (updated) {
+            return ResponseEntity.status(HttpStatus.OK).body("Update success");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Update failed!");
+        }
+    }
+
+
 
     @GetMapping("/getRoleByUsername")
     public ResponseEntity<?> getRoleByUsername(@RequestParam String username) {
