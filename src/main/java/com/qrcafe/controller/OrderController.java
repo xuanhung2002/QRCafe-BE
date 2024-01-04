@@ -207,6 +207,17 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/cancelOfflineOrder/{id}")
+    public ResponseEntity<?> cancelOfflineOrder(@PathVariable Long id) {
+        try {
+            orderService.cancelOrderOffline(id);
+            return ResponseEntity.status(HttpStatus.OK).body("cancel successed!!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/cancelOnlineOrder/{id}")
     public ResponseEntity<?> cancelOnlineOrder(@PathVariable Long id, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {

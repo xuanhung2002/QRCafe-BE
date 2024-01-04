@@ -27,6 +27,8 @@ public interface OrderService {
     Order addOrderOnline(OrderOnlineRequestDTO orderOnlineRequestDTO, String username);
 
     void cancelOrderOnline(Long id, String username);
+    void cancelOrderOffline(Long id);
+
 
     List<Order> getOrdersByUsername(String username);
 
