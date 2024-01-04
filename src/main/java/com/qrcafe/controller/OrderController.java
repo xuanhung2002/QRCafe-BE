@@ -195,7 +195,11 @@ public class OrderController {
 
         try {
             Order savedOrder = orderService.addOrderOnline(orderOnlineRequestDTO, username);
-            messagingTemplate.convertAndSend("/topic/newOnlineOrder", converter.toOrderOnlineResponseDTO(savedOrder));
+            WsMessageDTO messageDTO = WsMessageDTO.builder()
+                    .message("NEW_ONLINE_ORDER")
+                    .data(converter.toOrderOnlineResponseDTO(savedOrder))
+                    .build();
+            messagingTemplate.convertAndSend("/topic/notify", messageDTO);
             return ResponseEntity.status(HttpStatus.OK).body(converter.toOrderOnlineResponseDTO(savedOrder));
         } catch (Exception e) {
             e.printStackTrace();

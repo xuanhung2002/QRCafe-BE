@@ -65,4 +65,23 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderType=" + orderType +
+                ", status=" + status +
+                ", user=" + user +
+                ", table=" + table +
+                ", totalPrice=" + totalPrice +
+                ", location='" + location + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", note='" + note + '\'' +
+                ", orderTime=" + orderTime +
+                ", paymentTime=" + paymentTime +
+                ", paymentMethod=" + paymentMethod +
+                ", isPaid=" + isPaid +
+                ", orderDetails=" + orderDetails +
+                '}';
+    }
 }
