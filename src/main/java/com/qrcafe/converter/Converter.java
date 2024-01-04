@@ -101,6 +101,7 @@ public class Converter {
                 .isPaid(order.isPaid())
                 .totalPrice(order.getTotalPrice())
                 .tableId(order.getTable().getId())
+                .tableName(order.getTable().getName())
                 .orderDetails(order.getOrderDetails().stream().map(this::toOrderDetailResponseDTO).collect(Collectors.toList()))
                 .build();
     }
