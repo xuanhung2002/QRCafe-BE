@@ -1,10 +1,7 @@
 package com.qrcafe.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -296,7 +293,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Order getCurrentOrderOfTable(UUID idTable) {
     Table table = tableService.getTableById(idTable);
-    return orderRepository.getOrderByTableAndStatusNot(table, OrderStatus.DONE);
+    return orderRepository.getOrderByTableAndStatusNot(table, OrderStatus.DONE).stream()
+            .max(Comparator.comparing(Order::getOrderTime))
+            .orElse(null);
   }
 
   @Transactional

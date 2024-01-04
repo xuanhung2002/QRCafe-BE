@@ -17,7 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> getOrdersByUserUsername(String user_username);
 
 
-    Order getOrderByTableAndStatusNot(Table table, OrderStatus status);
+    List<Order> getOrderByTableAndStatusNot(Table table, OrderStatus status);
 
 
 }
