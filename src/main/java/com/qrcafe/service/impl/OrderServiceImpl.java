@@ -251,6 +251,26 @@ public class OrderServiceImpl implements OrderService {
 
   @Transactional
   @Override
+  public void cancelOrderOffline(Long id) {
+    Optional<Order> orderOpt = orderRepository.findById(id);
+
+    if (orderOpt.isPresent()) {
+      Order order = orderOpt.get();
+      if (order.getStatus() == OrderStatus.PENDING) {
+        order.setStatus(OrderStatus.CANCELLED);
+        order.getTable().setStatus(TableStatus.EMPTY);
+        orderRepository.save(order);
+      } else {
+        throw new SecurityException("You can not cancel this order");
+      }
+
+    } else {
+      throw new EntityNotFoundException("This order is not existed!");
+    }
+  }
+
+  @Transactional
+  @Override
   public void cancelOrderOnline(Long id, String username) {
     Optional<Order> orderOpt = orderRepository.findById(id);
 

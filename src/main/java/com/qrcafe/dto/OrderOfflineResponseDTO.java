@@ -19,6 +19,7 @@ public class OrderOfflineResponseDTO {
     private OrderType orderType = OrderType.OFFLINE;
     private String orderStatus;
     private UUID tableId;
+    private String tableName;
     private Double totalPrice;
     private String note;
     private String paymentMethod;
