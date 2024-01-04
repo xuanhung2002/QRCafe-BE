@@ -1,5 +1,6 @@
 package com.qrcafe.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qrcafe.enums.RolesEnum;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class UserDTO {
   private String username;
   private String fullName;
   private String email;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-dd-MM")
   private Date dateOfBirth;
   private List<RolesEnum> roles;
 }

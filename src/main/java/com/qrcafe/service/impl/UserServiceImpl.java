@@ -2,6 +2,7 @@ package com.qrcafe.service.impl;
 
 
 import com.qrcafe.dto.RegisterDTO;
+import com.qrcafe.dto.UserDTO;
 import com.qrcafe.dto.UserLocationDTO;
 import com.qrcafe.entity.Role;
 import com.qrcafe.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -77,6 +79,28 @@ public class UserServiceImpl implements UserService {
 
       try {
         userLocationRepository.save(oldUserLocation);
+        return true;
+      } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+      }
+    }
+    return false;
+  }
+
+  @Transactional
+  @Override
+  public boolean updateUserInformation(String username, UserDTO userDTO) {
+    User user = getUserByUsername(username);
+    if (user!= null) {
+      try {
+        user.setFullName(userDTO.getFullName());
+        user.setEmail(userDTO.getEmail());
+        System.out.println("before: " + userDTO.getDateOfBirth());
+        System.out.println("after: " + new Date(userDTO.getDateOfBirth().getTime()));
+
+        user.setDateOfBirth(new Date(userDTO.getDateOfBirth().getTime()));
+        save(user);
         return true;
       } catch (Exception e) {
         e.printStackTrace();
