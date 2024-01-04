@@ -48,6 +48,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/auth/**", "/oauth2/**").permitAll()
+                .requestMatchers("/api/mail/").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/product/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/product/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/product/**").hasAuthority("ADMIN")
