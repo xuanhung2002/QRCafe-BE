@@ -258,8 +258,10 @@ public class OrderServiceImpl implements OrderService {
       Order order = orderOpt.get();
       if (order.getStatus() == OrderStatus.PENDING) {
         order.setStatus(OrderStatus.CANCELLED);
-        order.getTable().setStatus(TableStatus.EMPTY);
         orderRepository.save(order);
+        Table table = order.getTable();
+        table.setStatus(TableStatus.EMPTY);
+        tableRepository.save(table);
       } else {
         throw new SecurityException("You can not cancel this order");
       }
