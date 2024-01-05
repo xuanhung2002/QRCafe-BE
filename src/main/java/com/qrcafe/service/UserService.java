@@ -15,6 +15,8 @@ public interface UserService {
     User save(User user);
 
     User getUserByUsername(String username);
+    User getUserByEmail(String email);
+
 
     List<UserLocation> getAllUserLocationsOfUser(String username);
 

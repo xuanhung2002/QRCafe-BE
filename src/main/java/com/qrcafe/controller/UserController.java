@@ -134,6 +134,7 @@ public class UserController {
 
 
 
+
     @GetMapping("/getRoleByUsername")
     public ResponseEntity<?> getRoleByUsername(@RequestParam String username) {
         List<Role> roles = userService.getRoleByUserName(username);
