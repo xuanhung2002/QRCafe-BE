@@ -28,10 +28,8 @@ public class EmailServiceImpl implements EmailService {
     // To send a simple email
     public String sendSimpleMail(EmailDetails details)
     {
-
         // Try block to check for exceptions
         try {
-
             // Creating a simple mail message
             SimpleMailMessage mailMessage
                     = new SimpleMailMessage();
@@ -52,6 +50,24 @@ public class EmailServiceImpl implements EmailService {
             return "Error while Sending Mail";
         }
     }
+
+    //To send a mime email with html body
+    public String sendMimeMail(EmailDetails emailDetails){
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            //mimeMessage.setContent(htmlMsg, "text/html"); /** Use this or below line **/
+            helper.setText(emailDetails.getMsgBody(), true); // Use this or above line.
+            helper.setTo(emailDetails.getRecipient());
+            helper.setSubject(emailDetails.getSubject());
+            helper.setFrom(sender);
+            javaMailSender.send(mimeMessage);
+            return "Mail Sent Successfully...";
+        } catch (Exception e) {
+            return "Error while Sending Mail";
+        }
+    }
+
 
     // Method 2
     // To send an email with attachment

@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,12 @@ public class User {
     private Date dateOfBirth;
 
     private OAuth2Provider oAuth2Provider;
+
+    @Column
+    private String resetPasswordCode;
+
+    @Column
+    private Timestamp codeExpiration;
 
     @OneToMany(mappedBy = "user")
     private List<UserLocation> userLocations;
